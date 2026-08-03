@@ -1,0 +1,81 @@
+--- pre-flight spend estimate (prices captured 2026-08-03) ---
+  codex       gpt-5.6-sol    mcp  $ 0.903
+  qwen-code   gpt-5.6-sol    mcp  $ 0.903
+  codex       gpt-5.2        mcp  $ 0.320
+  qwen-code   gpt-5.2        mcp  $ 0.320
+  codex       gpt-5.1        mcp  $ 0.229
+  qwen-code   gpt-5.1        mcp  $ 0.229
+  codex       gpt-5.6-terra  mcp  $ 0.181
+  qwen-code   gpt-5.6-terra  mcp  $ 0.181
+  codex       gpt-5.6-sol    cli  $ 0.173
+  qwen-code   gpt-5.6-sol    cli  $ 0.173
+  ... and 20 more metered cells
+  ESTIMATED TOTAL SPEND: $4.38  (30 metered cells)
+
+running 6 cells -> results/runs-codex5x-clean.jsonl
+[1/6] codex / gpt-5.2 / cli ...
+      -> 100.0%  tools=22 in=160294 cache=91.0% (32s)
+[2/6] qwen-code / gpt-5.2 / cli ...
+      -> 0.0%  tools=0 in=None cache=None% (2s)
+[3/6] pi / gpt-5.2 / cli ...
+      -> None%  tools=0 in=0 cache=None% (1s)
+[4/6] codex / gpt-5.2 / mcp ...
+      -> 100.0%  tools=2 in=43127 cache=64.4% (19s)
+[5/6] qwen-code / gpt-5.2 / mcp ...
+      -> 0.0%  tools=0 in=None cache=None% (1s)
+[6/6] pi / gpt-5.2 / mcp ...
+      -> VOID  tools=0 in=None cache=None% (0s)
+--- pre-flight spend estimate (prices captured 2026-08-03) ---
+  codex       gpt-5.6-sol    mcp  $ 0.903
+  qwen-code   gpt-5.6-sol    mcp  $ 0.903
+  codex       gpt-5.2        mcp  $ 0.320
+  qwen-code   gpt-5.2        mcp  $ 0.320
+  codex       gpt-5.1        mcp  $ 0.229
+  qwen-code   gpt-5.1        mcp  $ 0.229
+  codex       gpt-5.6-terra  mcp  $ 0.181
+  qwen-code   gpt-5.6-terra  mcp  $ 0.181
+  codex       gpt-5.6-sol    cli  $ 0.173
+  qwen-code   gpt-5.6-sol    cli  $ 0.173
+  ... and 20 more metered cells
+  ESTIMATED TOTAL SPEND: $4.38  (30 metered cells)
+
+running 6 cells -> results/runs-codex5x-clean.jsonl
+[1/6] codex / gpt-5.1 / cli ...
+      -> 100.0%  tools=2 in=61169 cache=44.2% (28s)
+[2/6] qwen-code / gpt-5.1 / cli ...
+      -> 0.0%  tools=0 in=None cache=None% (1s)
+[3/6] pi / gpt-5.1 / cli ...
+      -> None%  tools=0 in=0 cache=None% (0s)
+[4/6] codex / gpt-5.1 / mcp ...
+      -> 100.0%  tools=28 in=354000 cache=78.8% (90s)
+[5/6] qwen-code / gpt-5.1 / mcp ...
+      -> 0.0%  tools=0 in=None cache=None% (1s)
+[6/6] pi / gpt-5.1 / mcp ...
+      -> VOID  tools=0 in=None cache=None% (0s)
+--- pre-flight spend estimate (prices captured 2026-08-03) ---
+  codex       gpt-5.6-sol    mcp  $ 0.903
+  qwen-code   gpt-5.6-sol    mcp  $ 0.903
+  codex       gpt-5.2        mcp  $ 0.320
+  qwen-code   gpt-5.2        mcp  $ 0.320
+  codex       gpt-5.1        mcp  $ 0.229
+  qwen-code   gpt-5.1        mcp  $ 0.229
+  codex       gpt-5.6-terra  mcp  $ 0.181
+  qwen-code   gpt-5.6-terra  mcp  $ 0.181
+  codex       gpt-5.6-sol    cli  $ 0.173
+  qwen-code   gpt-5.6-sol    cli  $ 0.173
+  ... and 20 more metered cells
+  ESTIMATED TOTAL SPEND: $4.38  (30 metered cells)
+
+running 6 cells -> results/runs-codex5x-clean.jsonl
+[1/6] codex / gpt-5-mini / cli ...
+      -> 80.0%  tools=14 in=121552 cache=79.2% (38s)
+[2/6] qwen-code / gpt-5-mini / cli ...
+      -> 20.0%  tools=13 in=405321 cache=93.3% (32s)
+[3/6] pi / gpt-5-mini / cli ...
+      -> None%  tools=0 in=0 cache=None% (0s)
+[4/6] codex / gpt-5-mini / mcp ...
+      -> 80.0%  tools=0 in=64907 cache=0.0% (52s)
+[5/6] qwen-code / gpt-5-mini / mcp ...
+      -> 80.0%  tools=8 in=291964 cache=98.0% (34s)
+[6/6] pi / gpt-5-mini / mcp ...
+      -> VOID  tools=0 in=None cache=None% (0s)

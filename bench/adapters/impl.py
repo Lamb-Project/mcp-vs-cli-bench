@@ -215,9 +215,15 @@ class PiAdapter(Adapter):
         pass
 
     def command(self, model: str, arm: str) -> list[str]:
-        provider = "glm" if model == "glm-5.2" else "bench"
+        # providers are registered by setup/configure_pi.py
+        if model == "glm-5.2":
+            provider, mid = "glm", model
+        elif model in LOCAL_MODELS:
+            provider, mid = "ollama", model
+        else:
+            provider, mid = "openrouter", openrouter_id(model)
         return ["pi", "-p", "--mode", "json", "--thinking", "off",
-                "--provider", provider, "--model", model, prompt()]
+                "--provider", provider, "--model", mid, prompt()]
 
     def parse(self, stdout, stderr, res: RunResult) -> RunResult:
         events = [json.loads(l) for l in stdout.splitlines()

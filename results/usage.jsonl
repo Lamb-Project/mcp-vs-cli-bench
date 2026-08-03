@@ -117,3 +117,13 @@
 {"tag": "matrix", "model": "qwen3.6:27b", "n_messages": 15, "n_tools": 14, "prompt_tokens": 8943, "completion_tokens": 92, "total_tokens": 9035, "cached_tokens": 0, "latency_s": 15.55, "prefilled": 8943}
 {"tag": "matrix", "model": "qwen3.6:27b", "n_messages": 18, "n_tools": 14, "prompt_tokens": 9627, "completion_tokens": 117, "total_tokens": 9744, "cached_tokens": 0, "latency_s": 7.64, "prefilled": 9627}
 {"tag": "matrix", "model": "qwen3.6:27b", "n_messages": 21, "n_tools": 14, "prompt_tokens": 9805, "completion_tokens": 186, "total_tokens": 9991, "cached_tokens": 0, "latency_s": 8.52, "prefilled": 9805}
+{"tag": "matrix", "model": "gpt-5.6-sol", "n_messages": 2, "n_tools": 64, "prompt_tokens": 27526, "completion_tokens": 58, "total_tokens": 27584, "cached_tokens": 0, "latency_s": 2.92, "prefilled": 27526}
+{"tag": "matrix", "model": "gpt-5.6-sol", "n_messages": 4, "n_tools": 64, "prompt_tokens": 27594, "completion_tokens": 281, "total_tokens": 27875, "cached_tokens": 27523, "latency_s": 6.88, "prefilled": 71}
+{"tag": "matrix", "model": "gpt-5.6-sol", "n_messages": 2, "n_tools": 0, "prompt_tokens": 2404, "completion_tokens": 17, "total_tokens": 2421, "cached_tokens": 0, "latency_s": 1.03, "prefilled": 2404}
+{"tag": "matrix", "model": "gpt-5.6-sol", "n_messages": 2, "n_tools": 0, "prompt_tokens": 2213, "completion_tokens": 4, "total_tokens": 2217, "cached_tokens": 0, "latency_s": 1.01, "prefilled": 2213}
+{"tag": "matrix", "model": "gpt-5.6-sol", "n_messages": 2, "n_tools": 0, "prompt_tokens": 1422, "completion_tokens": 10, "total_tokens": 1432, "cached_tokens": 0, "latency_s": 1.51, "prefilled": 1422}
+{"tag": "matrix", "model": "gpt-5.6-sol", "n_messages": 2, "n_tools": 0, "prompt_tokens": 533, "completion_tokens": 6, "total_tokens": 539, "cached_tokens": 0, "latency_s": 2.98, "prefilled": 533}
+{"tag": "matrix", "model": "gpt-5.6-sol", "n_messages": 9, "n_tools": 64, "prompt_tokens": 28057, "completion_tokens": 66, "total_tokens": 28123, "cached_tokens": 27591, "latency_s": 5.43, "prefilled": 466}
+{"tag": "matrix", "model": "gpt-5.6-sol", "n_messages": 2, "n_tools": 0, "prompt_tokens": 15718, "completion_tokens": 131, "total_tokens": 15849, "cached_tokens": 0, "latency_s": 2.92, "prefilled": 15718}
+{"tag": "matrix", "model": "gpt-5.6-sol", "n_messages": 11, "n_tools": 64, "prompt_tokens": 28187, "completion_tokens": 73, "total_tokens": 28260, "cached_tokens": 28054, "latency_s": 2.1, "prefilled": 133}
+{"tag": "matrix", "model": "gpt-5.6-luna", "n_messages": 2, "n_tools": 64, "prompt_tokens": 27567, "completion_tokens": 338, "total_tokens": 27905, "cached_tokens": 0, "latency_s": 4.27, "prefilled": 27567}

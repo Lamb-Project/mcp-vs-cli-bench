@@ -24,6 +24,7 @@ SOURCES = [
     ("runs-codex-clean.jsonl", "codex re-run under per-run CODEX_HOME isolation"),
     ("runs-qwen-clean.jsonl", "qwen-code re-run through the proxy (max_tokens fix)"),
     ("runs-codex5x-clean.jsonl", "codex gpt-5.x re-run under isolation"),
+    ("runs-pi-fix.jsonl", "pi hosted cells re-run after the proxy key collision"),
 ]
 
 OUT = RESULTS / "final.jsonl"

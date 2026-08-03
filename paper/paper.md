@@ -552,6 +552,19 @@ tuned deployment would reverse.
 **Prices move.** The cost column is a snapshot of one public price list on one
 date, and it is a modelled figure rather than a billed one.
 
+**The study overran its own spending estimate.** A pre-flight estimate of $2.84
+became $5.92 in actual metered spend. Three causes, each worth naming because
+they generalise. The estimate assumed one run per cell, but contamination found
+mid-study forced full re-runs of two scaffoldings, roughly doubling the paid
+cells. One model — the most expensive per token — accounted for 60% of total
+spend from 12% of the tokens, so the mean cost per cell was a poor guide. And
+the ceiling we thought was enforcing itself was not: the proxy's budget feature
+requires a database backend, and without one it returned an authentication-shaped
+error rather than refusing to spend, which also silently failed three cells until
+the cause was traced. Budget enforcement now lives in the harness, computed from
+the proxy's own usage log, and refuses to start a cell that would breach the
+ceiling. Anyone reproducing this should expect re-runs and budget for them.
+
 **We wrote the CLI-side affordance.** Where a skill document is supplied to the
 CLI arm, we wrote it, and a reviewer is right to ask whether it is a fair match for
 the tool catalogue it is compared against. It is published in full for exactly

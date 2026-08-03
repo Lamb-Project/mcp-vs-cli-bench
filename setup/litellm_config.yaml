@@ -43,8 +43,9 @@ model_list:
 
 litellm_settings:
   callbacks: usage_logger.handler
-  max_budget: 5.0            # hard ceiling on metered spend, USD
-  budget_duration: 30d
+  # NOTE: litellm's max_budget requires a database backend; without one every
+  # request fails with "400 No connected db". The ceiling is enforced in the
+  # harness instead (bench/budget.py), which needs no external service.
   drop_params: true          # scaffoldings send provider-specific extras
 
 general_settings:

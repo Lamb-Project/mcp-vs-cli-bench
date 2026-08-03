@@ -277,6 +277,17 @@ class PiAdapter(Adapter):
     def prepare(self, run_dir: Path, model: str, arm: str) -> None:
         pass
 
+    def env(self, model: str) -> dict[str, str]:
+        env = super().env(model)
+        # pi prefers an inherited OPENAI_API_KEY over the key configured for its
+        # provider. Passing the real key made it authenticate to the proxy with a
+        # credential the proxy does not know, which LiteLLM rejects in
+        # user_api_key_auth as "No connected db" — an error that reads like a
+        # database problem and is actually key rejection. Drop it so pi uses the
+        # provider key from models.json.
+        env.pop("OPENAI_API_KEY", None)
+        return env
+
     def command(self, model: str, arm: str) -> list[str]:
         # providers are registered by setup/configure_pi.py
         if model == "glm-5.2":

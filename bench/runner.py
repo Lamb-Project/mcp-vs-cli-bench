@@ -16,6 +16,7 @@ import time
 from pathlib import Path
 
 from bench.adapters.impl import ADAPTERS, LOCAL_MODELS
+from bench.budget import check as budget_check, spent_usd
 from bench.costs import PRICES, PRICES_CAPTURED, theoretical_cost
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -117,7 +118,10 @@ def main() -> None:
         cells = [c for c in cells if args.only in c[0] or args.only in c[1]]
 
     print(f"\nrunning {len(cells)} cells -> {out}")
+    print(f"metered spend so far: ${spent_usd():.2f} of ${args.budget:.2f}")
     for i, (scaffolding, model, arm) in enumerate(cells, 1):
+        if model not in LOCAL_MODELS:
+            budget_check(args.budget)     # refuse to start a breaching cell
         if model in LOCAL_MODELS:
             clear_kv_cache()
         adapter = ADAPTERS[scaffolding](workdir, MCP_BIN, token)

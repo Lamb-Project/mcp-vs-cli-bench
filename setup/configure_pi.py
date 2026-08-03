@@ -46,12 +46,12 @@ PROVIDERS = {
         "api": "openai-completions",
         "apiKey": os.environ.get("OPENAI_API_KEY", ""),
         "models": [
-            model("gpt-5.2", "GPT-5.2", 400_000,
-                  {"input": 1.75, "output": 14.0, "cacheRead": 0, "cacheWrite": 0}),
-            model("gpt-5.1", "GPT-5.1", 400_000,
-                  {"input": 1.25, "output": 10.0, "cacheRead": 0, "cacheWrite": 0}),
-            model("gpt-5-mini", "GPT-5 mini", 400_000,
-                  {"input": 0.25, "output": 2.0, "cacheRead": 0, "cacheWrite": 0}),
+            model("gpt-5.6-sol", "GPT-5.6 Sol", 400_000,
+                  {"input": 5.0, "output": 30.0, "cacheRead": 0, "cacheWrite": 0}),
+            model("gpt-5.6-luna", "GPT-5.6 Luna", 400_000,
+                  {"input": 0.1, "output": 0.6, "cacheRead": 0, "cacheWrite": 0}),
+            model("gpt-5.6-terra", "GPT-5.6 Terra", 400_000,
+                  {"input": 1.0, "output": 6.0, "cacheRead": 0, "cacheWrite": 0}),
         ],
     },
 }

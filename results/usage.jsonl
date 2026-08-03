@@ -62,3 +62,12 @@
 {"tag": "matrix", "model": "glm-5.2", "n_messages": 8, "n_tools": 10, "prompt_tokens": 7822, "completion_tokens": 135, "total_tokens": 7957, "cached_tokens": 7761, "latency_s": 12.91, "prefilled": 61}
 {"tag": "matrix", "model": "glm-5.2", "n_messages": 10, "n_tools": 10, "prompt_tokens": 8062, "completion_tokens": 58, "total_tokens": 8120, "cached_tokens": 7956, "latency_s": 7.2, "prefilled": 106}
 {"tag": "matrix", "model": "glm-5.2", "n_messages": 13, "n_tools": 10, "prompt_tokens": 8170, "completion_tokens": 43, "total_tokens": 8213, "cached_tokens": 8119, "latency_s": 5.15, "prefilled": 51}
+{"tag": "matrix", "model": "qwen3.5:122b", "n_messages": 3, "n_tools": 10, "prompt_tokens": 7133, "completion_tokens": 202, "total_tokens": 7335, "cached_tokens": 0, "latency_s": 38.17, "prefilled": 7133}
+{"tag": "matrix", "model": "qwen3.5:122b", "n_messages": 6, "n_tools": 10, "prompt_tokens": 7465, "completion_tokens": 83, "total_tokens": 7548, "cached_tokens": 0, "latency_s": 2.83, "prefilled": 7465}
+{"tag": "matrix", "model": "qwen3.5:122b", "n_messages": 9, "n_tools": 10, "prompt_tokens": 7625, "completion_tokens": 84, "total_tokens": 7709, "cached_tokens": 0, "latency_s": 2.77, "prefilled": 7625}
+{"tag": "matrix", "model": "qwen3.5:122b", "n_messages": 12, "n_tools": 10, "prompt_tokens": 7807, "completion_tokens": 147, "total_tokens": 7954, "cached_tokens": 0, "latency_s": 4.36, "prefilled": 7807}
+{"tag": "matrix", "model": "qwen3.5:122b", "n_messages": 15, "n_tools": 10, "prompt_tokens": 8014, "completion_tokens": 70, "total_tokens": 8084, "cached_tokens": 0, "latency_s": 2.4, "prefilled": 8014}
+{"tag": "matrix", "model": "qwen3.5:122b", "n_messages": 18, "n_tools": 10, "prompt_tokens": 8154, "completion_tokens": 85, "total_tokens": 8239, "cached_tokens": 0, "latency_s": 2.8, "prefilled": 8154}
+{"tag": "matrix", "model": "qwen3.5:122b", "n_messages": 21, "n_tools": 10, "prompt_tokens": 8303, "completion_tokens": 72, "total_tokens": 8375, "cached_tokens": 0, "latency_s": 2.47, "prefilled": 8303}
+{"tag": "matrix", "model": "qwen3.5:122b", "n_messages": 24, "n_tools": 10, "prompt_tokens": 8433, "completion_tokens": 81, "total_tokens": 8514, "cached_tokens": 0, "latency_s": 2.67, "prefilled": 8433}
+{"tag": "matrix", "model": "qwen3.5:122b", "n_messages": 27, "n_tools": 10, "prompt_tokens": 8573, "completion_tokens": 175, "total_tokens": 8748, "cached_tokens": 0, "latency_s": 4.94, "prefilled": 8573}

@@ -113,8 +113,17 @@ class Adapter:
         env["GITHUB_PERSONAL_ACCESS_TOKEN"] = self.gh_token
         return env
 
+    def unsupported(self, model: str) -> str | None:
+        """Reason this scaffolding cannot reach this model at all, if any."""
+        return None
+
     def run(self, model: str, arm: str, timeout: int = 3600) -> RunResult:
         res = RunResult(scaffolding=self.name, model=model, arm=arm)
+        why = self.unsupported(model)
+        if why:
+            res.void = True
+            res.void_reason = why
+            return res
         if arm == "mcp" and not self.supports_mcp:
             res.void = True
             res.void_reason = f"{self.name} ships no MCP client"

@@ -24,9 +24,11 @@ PRICES_CAPTURED = "2026-08-03"
 
 # model key -> (input $/M, output $/M, openrouter id)
 PRICES: dict[str, tuple[float, float, str]] = {
-    "gpt-5.6-sol":    (5.00, 30.00, "openai/gpt-5.6-sol"),
-    "gpt-5.6-luna":   (0.10,  0.60, "openai/gpt-5.6-luna"),
-    "gpt-5.6-terra":  (1.00,  6.00, "openai/gpt-5.6-terra"),
+    # gpt-5.6 (sol/luna/terra) is OpenRouter-only and that key returns 401
+    # "User not found"; these are the hosted OpenAI models the repo key reaches.
+    "gpt-5.2":        (1.75, 14.00, "openai/gpt-5.2"),
+    "gpt-5.1":        (1.25, 10.00, "openai/gpt-5.1"),
+    "gpt-5-mini":     (0.25,  2.00, "openai/gpt-5-mini"),
     "sonnet-5":       (2.00, 10.00, "anthropic/claude-sonnet-5"),
     "opus-5":         (5.00, 25.00, "anthropic/claude-opus-5"),
     "fable-5":       (10.00, 50.00, "anthropic/claude-fable-5"),

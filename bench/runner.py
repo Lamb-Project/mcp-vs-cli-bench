@@ -22,7 +22,9 @@ ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
 MCP_BIN = str(ROOT / "bin" / "github-mcp-server")
 
-OPENAI_MODELS = ["gpt-5.6-sol", "gpt-5.6-luna", "gpt-5.6-terra"]
+OPENAI_MODELS = ["gpt-5.6-sol", "gpt-5.6-luna", "gpt-5.6-terra",
+                 # additional hosted coverage, same billing path
+                 "gpt-5.2", "gpt-5.1", "gpt-5-mini"]
 LOCAL = ["glm-5.2", "qwen3.5:122b", "qwen3.6:27b"]
 ANTHROPIC = ["sonnet-5", "opus-5", "fable-5"]
 

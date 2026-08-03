@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 """Re-derive results from saved run output, without re-running any cell.
 
+⚠️  Only valid for a run file whose cells have NOT since been re-run. Run
+directories are keyed by cell, not by run, so a re-run overwrites the stdout of
+the run it replaces — re-parsing an older file would silently pull the newer
+run's output into the older file's rows. Use bench.consolidate for precedence
+across run files; use this only to apply a parser fix to the most recent run of
+each cell.
+
 Every run's raw stdout is kept, so a parser fix can be applied retroactively.
 That matters here because parser gaps have twice produced a zero where the truth
 was "not recognised" — and re-running to fix a parser would cost money and change

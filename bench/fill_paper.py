@@ -13,13 +13,18 @@ reflects the current dataset, however many times this runs.
 from __future__ import annotations
 
 import json
+import os
 import re
 from pathlib import Path
 
 from bench.analyze import ARM_LABEL, markdown_table, summary, tool_register_summary
 
 ROOT = Path(__file__).resolve().parent.parent
-PAPER = ROOT / "paper" / "paper.md"
+# The manuscript is drafted outside this repository; override with BENCH_PAPER.
+# This repo publishes the harness and the data, not the write-up.
+PAPER = Path(os.environ.get("BENCH_PAPER", str(
+    Path.home() / "Documents/ludo-claude/ludo-writting-workshop/writting-projects"
+                  "/papers/2026/mcp-vs-cli-benchmark/paper-draft-v1.md")))
 DATA = ROOT / "results" / "final.jsonl"
 
 

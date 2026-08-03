@@ -81,7 +81,7 @@ python -m bench.runner --estimate-only     # spend estimate; refuses to exceed b
 python -m bench.runner --budget 5.00
 python -m bench.consolidate                # merge runs, later supersedes earlier
 python -m bench.analyze --runs results/final.jsonl
-./paper/render.sh                          # paper.pdf
+BENCH_PAPER=/path/to/draft.md python -m bench.fill_paper   # optional
 ```
 
 `install.sh` refuses to proceed if a precondition is wrong rather than producing
@@ -101,9 +101,16 @@ off" cannot be forgotten per-scaffolding.
 ```
 bench/       task definition + rubric, cost model, adapters, runner, analysis
 setup/       LiteLLM proxy config and per-request usage callback
-results/     raw JSONL, one record per run
-paper/       the write-up, sources and figures
+results/     raw JSONL per run, plus the consolidated dataset
 ```
+
+## The write-up
+
+This repository publishes the **benchmark and its data** — the part that has to be
+re-runnable and checkable. The manuscript is drafted separately and released on
+submission. `bench/fill_paper.py` still generates its results sections from
+`results/final.jsonl`, taking the manuscript path from `BENCH_PAPER`, so the
+figures and tables remain reproducible from the published data.
 
 ## Status
 

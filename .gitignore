@@ -5,3 +5,6 @@ __pycache__/
 *.pyc
 .venv*/
 bin/github-mcp-server
+
+# the manuscript is drafted in the workshop, not published here
+paper/

@@ -164,11 +164,22 @@ class CodexAdapter(Adapter):
             kind = it.get("item_type") or it.get("type")
             if kind == "command_execution":
                 cmd = it.get("command")
+                # codex reports the full argv including the shell wrapper and
+                # quoting; name the first real program the command actually runs
                 argv = cmd if isinstance(cmd, list) else str(cmd or "").split()
-                # skip the shell wrapper; name the program actually invoked
-                prog = next((a for a in argv
-                             if not a.startswith("-") and "sh" not in Path(a).name), None)
-                name = f"shell:{Path(prog).name}" if prog else "shell"
+                flat = " ".join(str(a) for a in argv)
+                flat = flat.replace("'", " ").replace('"', " ")
+                words = [w for w in flat.split()
+                         if w and not w.startswith("-")
+                         and Path(w).name not in {"bash", "sh", "zsh", "-lc", "lc"}]
+                # skip shell builtins that merely position the command
+                while words and words[0] in {"cd", "&&", ";", "cd;"}:
+                    words.pop(0)
+                    while words and (words[0].startswith("/") or words[0].startswith(".")):
+                        words.pop(0)
+                    while words and words[0] in {"&&", ";"}:
+                        words.pop(0)
+                name = f"shell:{Path(words[0]).name}" if words else "shell"
                 reg[name] = reg.get(name, 0) + 1
             elif kind == "mcp_tool_call":
                 nm = it.get("tool") or it.get("name") or "mcp__unknown"

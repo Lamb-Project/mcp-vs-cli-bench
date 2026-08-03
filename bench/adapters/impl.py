@@ -124,13 +124,20 @@ class CodexAdapter(Adapter):
 
 
     def prepare(self, run_dir: Path, model: str, arm: str) -> None:
-        # `-c mcp_servers...` overrides were silently ignored, so use the
-        # supported registration path and scope it to this run directory.
+        # CODEX_HOME per run. `codex mcp add` writes to the *global* config, so
+        # a server registered for an MCP arm stayed attached during the CLI arms
+        # too — one CLI run was observed calling MCP tools. Isolating the config
+        # directory makes each cell independent and the CLI arm genuinely
+        # MCP-free.
+        self._home = run_dir / ".codex"
+        self._home.mkdir(parents=True, exist_ok=True)
         if arm == "mcp":
-            import subprocess
-            subprocess.run(["codex", "mcp", "add", "github", "--", self.mcp_bin,
-                            "stdio"], cwd=str(run_dir), env=self.env(model),
-                           capture_output=True, text=True)
+            cfg = ('[mcp_servers.github]\n'
+                   f'command = "{self.mcp_bin}"\n'
+                   'args = ["stdio"]\n')
+            (self._home / "config.toml").write_text(cfg)
+        else:
+            (self._home / "config.toml").write_text("")   # explicitly no servers
 
     def command(self, model: str, arm: str) -> list[str]:
         base, _ = endpoint_for(model)
@@ -152,6 +159,9 @@ class CodexAdapter(Adapter):
         env = super().env(model)
         _, key = endpoint_for(model)
         env["BENCH_KEY"] = key or "local"
+        home = getattr(self, "_home", None)
+        if home is not None:
+            env["CODEX_HOME"] = str(home)
         return env
 
     def parse(self, stdout, stderr, res: RunResult) -> RunResult:
@@ -197,6 +207,15 @@ class CodexAdapter(Adapter):
                         words.pop(0)
                 name = f"shell:{Path(words[0]).name}" if words else "shell"
                 reg[name] = reg.get(name, 0) + 1
+            elif kind == "collab_tool_call":
+                # codex can delegate to sub-agents. Their tool calls and tokens
+                # are billed to separate threads and do NOT appear in the parent's
+                # usage record, so any cell that delegates is an undercount and is
+                # flagged rather than compared as-is.
+                tool = it.get("tool") or "collab"
+                reg[f"delegate:{tool}"] = reg.get(f"delegate:{tool}", 0) + 1
+                res.delegated += 1
+                res.totals_incomplete = True
             elif kind == "mcp_tool_call":
                 nm = it.get("tool") or it.get("name") or "mcp__unknown"
                 reg[f"mcp__{nm}" if not str(nm).startswith("mcp") else str(nm)] = \

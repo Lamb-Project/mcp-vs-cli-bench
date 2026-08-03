@@ -134,6 +134,66 @@ def tool_register_summary(rows: list[dict]) -> str:
     return "\n".join(out)
 
 
+def summary(rows: list[dict]) -> str:
+    """The paper's headline comparisons, computed rather than eyeballed."""
+    out = []
+    by: dict[tuple[str, str], dict[str, dict]] = {}
+    for r in rows:
+        if r.get("void"):
+            continue
+        by.setdefault((r["scaffolding"], r["model"]), {})[r["arm"]] = r
+
+    # 1. MCP/CLI token ratio, only where both arms are valid and complete
+    ratios = []
+    for (s, m), arms in sorted(by.items()):
+        c, k = arms.get("cli"), arms.get("mcp")
+        if not (c and k):
+            continue
+        if c.get("totals_incomplete") or k.get("totals_incomplete"):
+            continue
+        ci, ki = c.get("total_input_tokens"), k.get("total_input_tokens")
+        if not (ci and ki):
+            continue
+        ratios.append((f"{s}/{m}", ki / ci, ci, ki))
+    out.append("### MCP / CLI total-input ratio\n")
+    out.append("| Cell | CLI tokens | MCP tokens | MCP/CLI |")
+    out.append("|---|---:|---:|---:|")
+    for name, ratio, ci, ki in sorted(ratios, key=lambda x: -x[1]):
+        out.append(f"| {name} | {ci:,} | {ki:,} | {ratio:.2f}× |")
+    if ratios:
+        vals = sorted(r[1] for r in ratios)
+        med = vals[len(vals) // 2]
+        out.append(f"\n{len(ratios)} comparable cells · median **{med:.2f}×** · "
+                   f"range {vals[0]:.2f}×–{vals[-1]:.2f}×")
+
+    # 2. scaffolding overhead on a shared model, CLI arm
+    out.append("\n### Scaffolding overhead — same model, same arm\n")
+    out.append("| Model | Scaffolding | CLI tokens | Calls | Done % |")
+    out.append("|---|---|---:|---:|---:|")
+    per_model: dict[str, list] = {}
+    for (s, m), arms in by.items():
+        c = arms.get("cli")
+        if c and c.get("total_input_tokens"):
+            per_model.setdefault(m, []).append((s, c))
+    for m in sorted(per_model):
+        for s, c in sorted(per_model[m], key=lambda x: x[1]["total_input_tokens"]):
+            out.append(f"| {m} | {s} | {c['total_input_tokens']:,} | "
+                       f"{c.get('tool_calls', 0)} | {c.get('completion_pct')} |")
+
+    # 3. completion by arm
+    out.append("\n### Task completion by arm\n")
+    for arm in ("cli", "mcp"):
+        vals = [r["completion_pct"] for r in rows
+                if not r.get("void") and r["arm"] == arm
+                and r.get("completion_pct") is not None]
+        if vals:
+            full = sum(1 for v in vals if v == 100.0)
+            out.append(f"- **{ARM_LABEL[arm]}**: {len(vals)} scored runs, "
+                       f"{full} at 100% ({100*full/len(vals):.0f}%), "
+                       f"mean {sum(vals)/len(vals):.1f}%")
+    return "\n".join(out)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--runs", default=str(ROOT / "results" / "runs.jsonl"))
@@ -142,6 +202,7 @@ def main() -> None:
     live = [r for r in rows if not r.get("void")]
     print(f"{len(rows)} cells, {len(live)} live, {len(rows)-len(live)} void\n")
     print(markdown_table(rows))
+    print("\n" + summary(rows))
     print("\n### Tool register\n")
     print(tool_register_summary(rows))
 

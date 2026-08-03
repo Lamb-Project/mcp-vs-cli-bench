@@ -79,8 +79,56 @@ which any of our claims can be checked.
 
 ## 2. Related work
 
-‹TBD: expand — practitioner benchmarks, agent-harness papers, tool-selection work,
-context-management literature.›
+**Practitioner measurements.** The claim that MCP is expensive in tokens comes
+almost entirely from practitioner write-ups rather than from the literature, and
+they disagree by more than an order of magnitude. A matched-task comparison puts
+MCP at roughly 35× a CLI equivalent and reports task-completion reliability
+falling from 100% to 72% on harder scenarios [MindStudio 2026]. A single GitHub
+language query is measured at ~1,365 tokens through `gh` against ~44,026 through
+the matching MCP server [Vensas 2026]. A GitHub MCP server exposing 93 tools is
+reported to add ~55,000 tokens of registry overhead at session start against
+~200 for the CLI equivalent [Reinhard 2026]. Smaller catalogues are put at 13,700
+tokens for a browser-automation server and 18,000 for a developer-tools server,
+with the observation that "7–9% of context is gone before you start"
+[Zechner 2026].
+
+Each of these is a single configuration measured once, and none publishes a
+harness. They are valuable as existence proofs and unusable as a basis for a
+decision, because none of them isolates which of the several plausible causes —
+catalogue size, schema verbosity, result verbosity, scaffolding overhead, model
+competence — produced the number.
+
+**The protocol and its own guidance.** The Model Context Protocol specifies
+tools as named operations with descriptions, typed inputs and metadata exposed
+to the model [MCP 2025]. Anthropic's engineering guidance acknowledges that
+connecting many servers accumulates enough tool context to motivate
+code-execution patterns that reduce it [Anthropic 2026], which is a concession
+that the overhead is real and a suggestion that it is addressable by
+configuration rather than intrinsic to the protocol.
+
+**Progressive disclosure of tools.** The idea that tool descriptions should be
+fetched on demand rather than declared upfront appears both in practitioner
+writing and, as we found, already implemented in a shipping agent CLI: qwen-code
+declares deferred tool schemas upfront only when they fit inside a
+context-window budget and otherwise loads them through a search tool. That a
+mainstream scaffolding has independently converged on the mitigation is itself
+evidence about the size of the problem — and it is a confound for any
+measurement that does not pin the setting (§4.3).
+
+**Agent benchmarks.** Existing agent benchmarks largely measure task success —
+whether the agent solves the problem — with cost as a secondary reporting
+convenience where it appears at all. This benchmark inverts that: the task is
+deliberately easy enough that most capable models complete it, so that the
+measurement is dominated by *how much it cost to complete* rather than by
+whether it was completed. Completion is retained as a rubric percentage
+precisely because weak models fail partially and that gradation carries
+information about the surface.
+
+**What is missing, and what this adds.** No published work we are aware of
+measures the same task across multiple scaffoldings holding the surface
+constant, which is what isolates the scaffolding's own contribution from the
+protocol's. Our results suggest that contribution is large enough to dominate
+the comparison the literature is actually arguing about.
 
 ## 3. Method
 
@@ -321,4 +369,23 @@ used; and the local KV cache cleared between runs.
 
 ## References
 
-‹TBD›
+[Anthropic 2026] Anthropic. *Code execution with MCP: building more efficient
+agents.* Engineering blog, 2026.
+
+[MCP 2025] Model Context Protocol specification. `modelcontextprotocol.io`, 2025.
+
+[MindStudio 2026] MindStudio. *CLI vs MCP: a controlled comparison of token cost
+and task reliability.* 2026.
+
+[Reinhard 2026] Reinhard, A. *The hidden cost of MCP servers in your context
+window.* 2026.
+
+[Vensas 2026] Vensas. *Measuring MCP overhead against the GitHub CLI.* 2026.
+
+[Zechner 2026] Zechner, M. *What I learned building an opinionated and minimal
+coding agent.* 2026.
+
+> [!note] Marc
+> Reference metadata is from the AAWD reference list and needs a URL-liveness
+> pass before submission — the practitioner citations are the ones most likely
+> to have moved.

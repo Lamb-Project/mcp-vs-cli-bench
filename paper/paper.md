@@ -284,7 +284,36 @@ because of what had run before it.
 
 Runs are interleaved by arm and the local cache is cleared between cells.
 
-### 4.5 Reasoning that does not terminate
+### 4.5 A guard that breaks instead of guarding
+
+We capped spend using the proxy's built-in budget feature. It requires a
+database backend, and without one it does not decline requests — it fails them,
+returning an authentication-shaped error (`No connected db`) that names neither
+budgets nor databases. Three cells failed silently for hours while the mechanism
+appeared to be protecting the ceiling, and the ceiling was never enforced: the
+study finished 18% over budget.
+
+Two lessons generalise. A safety mechanism that has never been observed refusing
+something is not known to work. And an error message naming a subsystem is not
+evidence that subsystem is the cause — the same message here also turned out to
+mean *key rejection* in a different code path (§4.6). Budget enforcement now
+lives in the harness, computed from the proxy's own usage log, with no external
+dependency.
+
+### 4.6 Credentials inherited from the environment
+
+One scaffolding prefers an inherited `OPENAI_API_KEY` over the key configured
+for its provider. Pointed at a proxy, it therefore authenticated with a
+credential the proxy did not recognise and every request failed — with the same
+`No connected db` message as §4.5, produced by an entirely different fault.
+
+The general form: **scaffoldings merge configuration from outside the run
+directory** — environment variables, user-scope settings files, global config.
+This is the same class as the tool-registry leak in §4.1, and it is the hazard
+most likely to affect a replication run on a developer machine, where the
+operator's own credentials and installed servers are ambient.
+
+### 4.7 Reasoning that does not terminate
 
 With extended thinking enabled, the locally-served GLM model has produced 26,000+
 reasoning tokens without converging on a task it solves in ~500 tokens with

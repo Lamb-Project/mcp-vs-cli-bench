@@ -40,18 +40,18 @@ PROVIDERS = {
         "models": [model("qwen3.5:122b", "Qwen3.5 122B (local)", 131072),
                    model("qwen3.6:27b", "Qwen3.6 27B (local)", 262144)],
     },
-    "openrouter": {
-        "name": "OpenRouter",
-        "baseUrl": "https://openrouter.ai/api/v1",
+    "openai": {
+        "name": "OpenAI",
+        "baseUrl": "https://api.openai.com/v1",
         "api": "openai-completions",
-        "apiKey": os.environ.get("OPENROUTER_API_KEY", ""),
+        "apiKey": os.environ.get("OPENAI_API_KEY", ""),
         "models": [
-            model("openai/gpt-5.6-sol", "GPT-5.6 Sol", 1_050_000,
-                  {"input": 5.0, "output": 30.0, "cacheRead": 0, "cacheWrite": 0}),
-            model("openai/gpt-5.6-luna", "GPT-5.6 Luna", 1_050_000,
-                  {"input": 0.1, "output": 0.6, "cacheRead": 0, "cacheWrite": 0}),
-            model("openai/gpt-5.6-terra", "GPT-5.6 Terra", 1_050_000,
-                  {"input": 1.0, "output": 6.0, "cacheRead": 0, "cacheWrite": 0}),
+            model("gpt-5.2", "GPT-5.2", 400_000,
+                  {"input": 1.75, "output": 14.0, "cacheRead": 0, "cacheWrite": 0}),
+            model("gpt-5.1", "GPT-5.1", 400_000,
+                  {"input": 1.25, "output": 10.0, "cacheRead": 0, "cacheWrite": 0}),
+            model("gpt-5-mini", "GPT-5 mini", 400_000,
+                  {"input": 0.25, "output": 2.0, "cacheRead": 0, "cacheWrite": 0}),
         ],
     },
 }
@@ -69,8 +69,8 @@ def main() -> None:
             raise SystemExit(1)
 
     providers = current.setdefault("providers", {})
-    if not PROVIDERS["openrouter"]["apiKey"]:
-        print("warning: OPENROUTER_API_KEY unset — hosted pi cells will fail",
+    if not PROVIDERS["openai"]["apiKey"]:
+        print("warning: OPENAI_API_KEY unset — hosted pi cells will fail",
               file=sys.stderr)
     for key, spec in PROVIDERS.items():
         providers[key] = spec          # last writer wins, by design

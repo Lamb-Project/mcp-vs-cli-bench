@@ -1,0 +1,26 @@
+--- pre-flight spend estimate (prices captured 2026-08-03) ---
+  codex       gpt-5.6-sol    mcp  $ 0.903
+  qwen-code   gpt-5.6-sol    mcp  $ 0.903
+  codex       gpt-5.6-terra  mcp  $ 0.181
+  qwen-code   gpt-5.6-terra  mcp  $ 0.181
+  codex       gpt-5.6-sol    cli  $ 0.173
+  qwen-code   gpt-5.6-sol    cli  $ 0.173
+  pi          gpt-5.6-sol    cli  $ 0.173
+  codex       gpt-5.6-terra  cli  $ 0.035
+  qwen-code   gpt-5.6-terra  cli  $ 0.035
+  pi          gpt-5.6-terra  cli  $ 0.035
+  ... and 5 more metered cells
+  ESTIMATED TOTAL SPEND: $2.84  (15 metered cells)
+
+running 42 cells -> /Users/granludo/code/mcp-vs-cli-bench/results/runs.jsonl
+[1/42] claude-code / sonnet-5 / cli ...
+      -> 0.0%  tools=0 in=0 cache=None% (3s)
+[2/42] claude-code / opus-5 / cli ...
+      -> 0.0%  tools=0 in=0 cache=None% (2s)
+[3/42] claude-code / fable-5 / cli ...
+      -> 0.0%  tools=0 in=0 cache=None% (2s)
+[4/42] codex / gpt-5.6-sol / cli ...
+      -> None%  tools=0 in=None cache=None% (7s)
+[5/42] codex / gpt-5.6-luna / cli ...
+      -> None%  tools=0 in=None cache=None% (7s)
+[6/42] codex / gpt-5.6-terra / cli ...

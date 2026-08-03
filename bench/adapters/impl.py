@@ -26,19 +26,24 @@ from bench.adapters.base import Adapter, RunResult, prompt
 # four scaffoldings point at them at all.
 GLM_BASE = "http://localhost:8000/v1"
 OLLAMA_BASE = "http://192.168.1.47:11434/v1"
-OPENROUTER_BASE = "https://openrouter.ai/api/v1"
+OPENAI_BASE = "https://api.openai.com/v1"
 
 LOCAL_MODELS = {"glm-5.2": GLM_BASE, "qwen3.5:122b": OLLAMA_BASE,
                 "qwen3.6:27b": OLLAMA_BASE}
 
 
 def endpoint_for(model: str) -> tuple[str, str]:
-    """(base_url, api_key_env_value) for a model."""
+    """(base_url, api_key) for a model.
+
+    Hosted models go to the OpenAI API directly. OpenRouter is used only as the
+    published price list for the cost model, never as a request path — its key
+    returns 401 and, separately, codex speaks only the Responses API which
+    OpenRouter does not serve.
+    """
     if model in LOCAL_MODELS:
         return LOCAL_MODELS[model], "local"
     import os
-    key = os.environ.get("OPENROUTER_API_KEY", "")
-    return OPENROUTER_BASE, key
+    return OPENAI_BASE, os.environ.get("OPENAI_API_KEY", "")
 
 
 def openrouter_id(model: str) -> str:
@@ -75,16 +80,24 @@ class ClaudeCodeAdapter(Adapter):
                 "env": {"GITHUB_PERSONAL_ACCESS_TOKEN": "$GITHUB_PERSONAL_ACCESS_TOKEN"}}}}
             (run_dir / ".mcp.json").write_text(json.dumps(cfg, indent=1))
 
+    # the matrix names models uniformly (sonnet-5); claude takes bare aliases
+    ALIAS = {"sonnet-5": "sonnet", "opus-5": "opus", "fable-5": "fable"}
+
     def command(self, model: str, arm: str) -> list[str]:
-        cmd = ["claude", "-p", prompt(), "--output-format", "json",
-               "--model", model, "--permission-mode", "bypassPermissions"]
+        # stream-json (not json): the plain json mode returns only the final
+        # result, so tool calls would be invisible and reported as zero
+        cmd = ["claude", "-p", prompt(), "--output-format", "stream-json",
+               "--verbose", "--model", self.ALIAS.get(model, model),
+               "--permission-mode", "bypassPermissions"]
         if arm == "cli":
             cmd += ["--strict-mcp-config"]      # no MCP servers at all
         return cmd
 
     def parse(self, stdout, stderr, res: RunResult) -> RunResult:
-        doc = json.loads(stdout)
-        doc = doc[0] if isinstance(doc, list) else doc
+        events = [json.loads(l) for l in stdout.splitlines()
+                  if l.strip().startswith("{")]
+        doc = next((e for e in reversed(events) if e.get("type") == "result"),
+                   events[-1] if events else {})
         u = doc.get("usage") or {}
         res.total_input_tokens = (u.get("input_tokens") or 0) + \
             (u.get("cache_read_input_tokens") or 0) + (u.get("cache_creation_input_tokens") or 0)
@@ -99,7 +112,7 @@ class ClaudeCodeAdapter(Adapter):
         res.answer = doc.get("result")
         res.notes.append(f"claude-reported billed cost ${doc.get('total_cost_usd')}")
         reg: dict[str, int] = {}
-        _walk_tool_calls(doc, reg)
+        _walk_tool_calls(events, reg)
         res.tool_register = reg
         res.tool_calls = sum(reg.values())
         return res
@@ -108,6 +121,7 @@ class ClaudeCodeAdapter(Adapter):
 class CodexAdapter(Adapter):
     name = "codex"
     supports_mcp = True
+
 
     def prepare(self, run_dir: Path, model: str, arm: str) -> None:
         # `-c mcp_servers...` overrides were silently ignored, so use the
@@ -120,12 +134,14 @@ class CodexAdapter(Adapter):
 
     def command(self, model: str, arm: str) -> list[str]:
         base, _ = endpoint_for(model)
-        mid = model if model in LOCAL_MODELS else openrouter_id(model)
+        mid = model            # plain ids on both local and OpenAI endpoints
         cmd = ["codex", "exec", "--json", "--skip-git-repo-check",
                "-c", 'model_provider="bench"',
                "-c", 'model_providers.bench.name="bench"',
                "-c", f'model_providers.bench.base_url="{base}"',
                "-c", 'model_providers.bench.env_key="BENCH_KEY"',
+               # codex defaults to the Responses API; OpenRouter and llama-server
+               # both speak chat/completions, so pin the wire protocol
                "-c", 'model_reasoning_effort="low"',
                "-m", mid,
                "--dangerously-bypass-approvals-and-sandbox"]
@@ -214,7 +230,7 @@ class QwenCodeAdapter(Adapter):
         base, key = endpoint_for(model)
         env["OPENAI_BASE_URL"] = base
         env["OPENAI_API_KEY"] = key or "local"
-        env["OPENAI_MODEL"] = model if model in LOCAL_MODELS else openrouter_id(model)
+        env["OPENAI_MODEL"] = model
         return env
 
     def parse(self, stdout, stderr, res: RunResult) -> RunResult:
@@ -249,7 +265,7 @@ class PiAdapter(Adapter):
         elif model in LOCAL_MODELS:
             provider, mid = "ollama", model
         else:
-            provider, mid = "openrouter", openrouter_id(model)
+            provider, mid = "openai", model
         return ["pi", "-p", "--mode", "json", "--thinking", "off",
                 "--provider", provider, "--model", mid, prompt()]
 

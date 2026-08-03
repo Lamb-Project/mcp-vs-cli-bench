@@ -47,7 +47,24 @@ class RunResult:
 
     # provenance
     answer: str | None = None
+    mcp_attached: bool | None = None      # None = not applicable (CLI arm)
     notes: list[str] = field(default_factory=list)
+
+    def assert_mcp(self, prefixes: tuple[str, ...] = ("mcp__", "mcp_")) -> None:
+        """An MCP arm that never called an MCP tool did not run the arm.
+
+        Both qwen-code (unapproved server) and codex (config override ignored)
+        have silently started with no MCP tools and produced clean-looking
+        numbers, so this is checked rather than assumed.
+        """
+        if self.arm != "mcp":
+            return
+        used = any(n.startswith(prefixes) for n in self.tool_register)
+        self.mcp_attached = used
+        if not used:
+            self.void = True
+            self.void_reason = ("MCP arm ran without any MCP tool call — server "
+                                "did not attach; cell is not a valid MCP measurement")
 
     def finalise(self) -> "RunResult":
         if self.tool_calls:
@@ -128,6 +145,8 @@ class Adapter:
             res = self.parse(proc.stdout, proc.stderr, res)
         except Exception as exc:  # noqa: BLE001
             res.error = f"parse failed: {exc}"
+            return res.finalise()
+        res.assert_mcp()
         return res.finalise()
 
 

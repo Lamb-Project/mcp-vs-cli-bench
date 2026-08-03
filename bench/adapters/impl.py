@@ -110,7 +110,13 @@ class CodexAdapter(Adapter):
     supports_mcp = True
 
     def prepare(self, run_dir: Path, model: str, arm: str) -> None:
-        pass  # everything goes through -c overrides so runs stay isolated
+        # `-c mcp_servers...` overrides were silently ignored, so use the
+        # supported registration path and scope it to this run directory.
+        if arm == "mcp":
+            import subprocess
+            subprocess.run(["codex", "mcp", "add", "github", "--", self.mcp_bin,
+                            "stdio"], cwd=str(run_dir), env=self.env(model),
+                           capture_output=True, text=True)
 
     def command(self, model: str, arm: str) -> list[str]:
         base, _ = endpoint_for(model)
@@ -123,9 +129,6 @@ class CodexAdapter(Adapter):
                "-c", 'model_reasoning_effort="low"',
                "-m", mid,
                "--dangerously-bypass-approvals-and-sandbox"]
-        if arm == "mcp":
-            cmd += ["-c", f'mcp_servers.github.command="{self.mcp_bin}"',
-                    "-c", 'mcp_servers.github.args=["stdio"]']
         cmd += [prompt()]
         return cmd
 
@@ -156,7 +159,21 @@ class CodexAdapter(Adapter):
             res.initial_tokens = usages[0].get("input_tokens")
         res.answer = texts[-1] if texts else None
         reg: dict[str, int] = {}
-        _walk_tool_calls(events, reg)
+        for e in events:
+            it = e.get("item") or {}
+            kind = it.get("item_type") or it.get("type")
+            if kind == "command_execution":
+                cmd = it.get("command")
+                argv = cmd if isinstance(cmd, list) else str(cmd or "").split()
+                # skip the shell wrapper; name the program actually invoked
+                prog = next((a for a in argv
+                             if not a.startswith("-") and "sh" not in Path(a).name), None)
+                name = f"shell:{Path(prog).name}" if prog else "shell"
+                reg[name] = reg.get(name, 0) + 1
+            elif kind == "mcp_tool_call":
+                nm = it.get("tool") or it.get("name") or "mcp__unknown"
+                reg[f"mcp__{nm}" if not str(nm).startswith("mcp") else str(nm)] = \
+                    reg.get(f"mcp__{nm}", 0) + 1
         res.tool_register = reg
         res.tool_calls = sum(reg.values())
         return res
@@ -232,8 +249,12 @@ class PiAdapter(Adapter):
         usages = [(t.get("message") or {}).get("usage") or {} for t in turns]
         usages = [u for u in usages if u]
         if usages:
-            res.initial_tokens = usages[0].get("input")
-            res.total_input_tokens = sum(u.get("input") or 0 for u in usages)
+            res.initial_tokens = ((usages[0].get("input") or 0)
+                                  + (usages[0].get("cacheRead") or 0))
+            # pi reports fresh input and cached reads separately; the prompt the
+            # model actually saw is the sum of the two
+            res.total_input_tokens = sum((u.get("input") or 0) + (u.get("cacheRead") or 0)
+                                         for u in usages)
             res.total_output_tokens = sum(u.get("output") or 0 for u in usages)
             res.cached_tokens = sum(u.get("cacheRead") or 0 for u in usages)
         final = next((e for e in reversed(events) if e.get("type") == "agent_end"), {})
@@ -246,7 +267,14 @@ class PiAdapter(Adapter):
                     res.answer = "\n".join(p for p in parts if p)
                     break
         reg: dict[str, int] = {}
-        _walk_tool_calls(events, reg)
+        for t_ in turns:
+            for tr in (t_.get("toolResults") or []):
+                nm = tr.get("toolName") or tr.get("name") or "tool"
+                reg[nm] = reg.get(nm, 0) + 1
+                if tr.get("isError"):
+                    res.tool_failures += 1
+        if not reg:
+            _walk_tool_calls(events, reg)
         res.tool_register = reg
         res.tool_calls = sum(reg.values())
         return res

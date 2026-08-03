@@ -107,8 +107,10 @@ def main() -> None:
 
     # arm-major interleave: every scaffolding/model sees CLI then MCP in turn,
     # so cache warmth cannot align with one arm
-    cells = [(s, m, a) for a in ARMS for s, ms in MATRIX.items() for m in ms
-             if not (a == "mcp" and not ADAPTERS[s].supports_mcp)]
+    # void cells are RUN (and immediately returned void) rather than skipped, so
+    # they appear in the results table -- "cannot" and "costs nothing" are
+    # different claims and the table has to be able to say which
+    cells = [(s, m, a) for a in ARMS for s, ms in MATRIX.items() for m in ms]
     if args.only:
         cells = [c for c in cells if args.only in c[0] or args.only in c[1]]
 

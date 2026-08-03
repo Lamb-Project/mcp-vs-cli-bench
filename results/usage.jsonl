@@ -71,3 +71,10 @@
 {"tag": "matrix", "model": "qwen3.5:122b", "n_messages": 21, "n_tools": 10, "prompt_tokens": 8303, "completion_tokens": 72, "total_tokens": 8375, "cached_tokens": 0, "latency_s": 2.47, "prefilled": 8303}
 {"tag": "matrix", "model": "qwen3.5:122b", "n_messages": 24, "n_tools": 10, "prompt_tokens": 8433, "completion_tokens": 81, "total_tokens": 8514, "cached_tokens": 0, "latency_s": 2.67, "prefilled": 8433}
 {"tag": "matrix", "model": "qwen3.5:122b", "n_messages": 27, "n_tools": 10, "prompt_tokens": 8573, "completion_tokens": 175, "total_tokens": 8748, "cached_tokens": 0, "latency_s": 4.94, "prefilled": 8573}
+{"tag": "matrix", "model": "qwen3.6:27b", "n_messages": 3, "n_tools": 10, "prompt_tokens": 7131, "completion_tokens": 146, "total_tokens": 7277, "cached_tokens": 0, "latency_s": 40.65, "prefilled": 7131}
+{"tag": "matrix", "model": "qwen3.6:27b", "n_messages": 6, "n_tools": 10, "prompt_tokens": 7342, "completion_tokens": 73, "total_tokens": 7415, "cached_tokens": 0, "latency_s": 11.81, "prefilled": 7342}
+{"tag": "matrix", "model": "qwen3.6:27b", "n_messages": 9, "n_tools": 10, "prompt_tokens": 7474, "completion_tokens": 74, "total_tokens": 7548, "cached_tokens": 0, "latency_s": 3.77, "prefilled": 7474}
+{"tag": "matrix", "model": "qwen3.6:27b", "n_messages": 12, "n_tools": 10, "prompt_tokens": 7620, "completion_tokens": 154, "total_tokens": 7774, "cached_tokens": 0, "latency_s": 7.17, "prefilled": 7620}
+{"tag": "matrix", "model": "qwen3.6:27b", "n_messages": 15, "n_tools": 10, "prompt_tokens": 7850, "completion_tokens": 88, "total_tokens": 7938, "cached_tokens": 0, "latency_s": 4.44, "prefilled": 7850}
+{"tag": "matrix", "model": "qwen3.6:27b", "n_messages": 18, "n_tools": 10, "prompt_tokens": 8529, "completion_tokens": 79, "total_tokens": 8608, "cached_tokens": 0, "latency_s": 5.96, "prefilled": 8529}
+{"tag": "matrix", "model": "qwen3.6:27b", "n_messages": 21, "n_tools": 10, "prompt_tokens": 8664, "completion_tokens": 73, "total_tokens": 8737, "cached_tokens": 0, "latency_s": 3.73, "prefilled": 8664}

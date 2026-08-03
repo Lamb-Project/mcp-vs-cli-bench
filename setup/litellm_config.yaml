@@ -1,0 +1,22 @@
+# LiteLLM proxy: qwen-code / pi  ->  here  ->  llama-server (GLM-5.2)
+#
+# Sits in the chain so per-request usage is recorded independently of the
+# scaffold's own accounting, and so the per-turn series is recoverable at all.
+# drop_params is off deliberately: silently discarding request parameters would
+# change what we are measuring.
+
+model_list:
+  - model_name: glm-5.2
+    litellm_params:
+      model: openai/glm-5.2
+      api_base: http://localhost:8000/v1
+      api_key: local
+
+litellm_settings:
+  callbacks: usage_logger.handler
+  # keep the upstream usage object intact -- prompt_tokens_details.cached_tokens
+  # is the measurement, and must survive the hop
+  return_response_headers: true
+
+general_settings:
+  master_key: sk-e1-local

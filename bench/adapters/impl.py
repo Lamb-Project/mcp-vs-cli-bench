@@ -1,0 +1,250 @@
+"""Concrete adapters, written against telemetry shapes verified by discovery.
+
+Field locations were established by running each scaffolding once and inspecting
+its output (see bench/discover_shapes.py and results/shapes/), not from
+documentation — three of the four document none of this.
+
+Verified shapes:
+  claude : one JSON document; usage.{input_tokens,output_tokens,
+           cache_read_input_tokens,cache_creation_input_tokens}, usage.iterations[]
+           (a genuine per-turn series), total_cost_usd, num_turns, result
+  codex  : JSONL; turn.completed carries usage.{input_tokens,output_tokens,
+           cached_input_tokens,cache_write_input_tokens}
+  pi     : JSONL; turn_end.message.usage.{input,output,cacheRead,cacheWrite}
+           plus turn_end.toolResults
+  qwen   : one JSON document; per-event usage.{input_tokens,output_tokens,
+           cache_read_input_tokens}, aggregated (no per-turn series)
+"""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from bench.adapters.base import Adapter, RunResult, prompt
+
+# Local endpoints. Both are OpenAI-compatible, which is what lets three of the
+# four scaffoldings point at them at all.
+GLM_BASE = "http://localhost:8000/v1"
+OLLAMA_BASE = "http://192.168.1.47:11434/v1"
+OPENROUTER_BASE = "https://openrouter.ai/api/v1"
+
+LOCAL_MODELS = {"glm-5.2": GLM_BASE, "qwen3.5:122b": OLLAMA_BASE,
+                "qwen3.6:27b": OLLAMA_BASE}
+
+
+def endpoint_for(model: str) -> tuple[str, str]:
+    """(base_url, api_key_env_value) for a model."""
+    if model in LOCAL_MODELS:
+        return LOCAL_MODELS[model], "local"
+    import os
+    key = os.environ.get("OPENROUTER_API_KEY", "")
+    return OPENROUTER_BASE, key
+
+
+def openrouter_id(model: str) -> str:
+    from bench.costs import PRICES
+    return PRICES[model][2] if model in PRICES else model
+
+
+def _walk_tool_calls(obj, register: dict[str, int], names=("tool_use", "function_call")):
+    """Collect tool-call names from any of the four event dialects."""
+    if isinstance(obj, dict):
+        t = obj.get("type")
+        if t in names and obj.get("name"):
+            register[obj["name"]] = register.get(obj["name"], 0) + 1
+        # codex item dialect
+        if t in ("command_execution", "mcp_tool_call", "function_call"):
+            nm = obj.get("name") or obj.get("command") or t
+            nm = nm if isinstance(nm, str) else t
+            register[nm.split()[0][:60]] = register.get(nm.split()[0][:60], 0) + 1
+        for v in obj.values():
+            _walk_tool_calls(v, register, names)
+    elif isinstance(obj, list):
+        for v in obj:
+            _walk_tool_calls(v, register, names)
+
+
+class ClaudeCodeAdapter(Adapter):
+    name = "claude-code"
+    supports_mcp = True
+
+    def prepare(self, run_dir: Path, model: str, arm: str) -> None:
+        if arm == "mcp":
+            cfg = {"mcpServers": {"github": {
+                "command": self.mcp_bin, "args": ["stdio"],
+                "env": {"GITHUB_PERSONAL_ACCESS_TOKEN": "$GITHUB_PERSONAL_ACCESS_TOKEN"}}}}
+            (run_dir / ".mcp.json").write_text(json.dumps(cfg, indent=1))
+
+    def command(self, model: str, arm: str) -> list[str]:
+        cmd = ["claude", "-p", prompt(), "--output-format", "json",
+               "--model", model, "--permission-mode", "bypassPermissions"]
+        if arm == "cli":
+            cmd += ["--strict-mcp-config"]      # no MCP servers at all
+        return cmd
+
+    def parse(self, stdout, stderr, res: RunResult) -> RunResult:
+        doc = json.loads(stdout)
+        doc = doc[0] if isinstance(doc, list) else doc
+        u = doc.get("usage") or {}
+        res.total_input_tokens = (u.get("input_tokens") or 0) + \
+            (u.get("cache_read_input_tokens") or 0) + (u.get("cache_creation_input_tokens") or 0)
+        res.total_output_tokens = u.get("output_tokens")
+        res.cached_tokens = u.get("cache_read_input_tokens")
+        iters = u.get("iterations") or []
+        if iters:
+            first = iters[0]
+            res.initial_tokens = (first.get("input_tokens") or 0) + \
+                (first.get("cache_read_input_tokens") or 0) + \
+                (first.get("cache_creation_input_tokens") or 0)
+        res.answer = doc.get("result")
+        res.notes.append(f"claude-reported billed cost ${doc.get('total_cost_usd')}")
+        reg: dict[str, int] = {}
+        _walk_tool_calls(doc, reg)
+        res.tool_register = reg
+        res.tool_calls = sum(reg.values())
+        return res
+
+
+class CodexAdapter(Adapter):
+    name = "codex"
+    supports_mcp = True
+
+    def prepare(self, run_dir: Path, model: str, arm: str) -> None:
+        pass  # everything goes through -c overrides so runs stay isolated
+
+    def command(self, model: str, arm: str) -> list[str]:
+        base, _ = endpoint_for(model)
+        mid = model if model in LOCAL_MODELS else openrouter_id(model)
+        cmd = ["codex", "exec", "--json", "--skip-git-repo-check",
+               "-c", 'model_provider="bench"',
+               "-c", 'model_providers.bench.name="bench"',
+               "-c", f'model_providers.bench.base_url="{base}"',
+               "-c", 'model_providers.bench.env_key="BENCH_KEY"',
+               "-c", 'model_reasoning_effort="low"',
+               "-m", mid,
+               "--dangerously-bypass-approvals-and-sandbox"]
+        if arm == "mcp":
+            cmd += ["-c", f'mcp_servers.github.command="{self.mcp_bin}"',
+                    "-c", 'mcp_servers.github.args=["stdio"]']
+        cmd += [prompt()]
+        return cmd
+
+    def env(self, model: str) -> dict[str, str]:
+        env = super().env(model)
+        _, key = endpoint_for(model)
+        env["BENCH_KEY"] = key or "local"
+        return env
+
+    def parse(self, stdout, stderr, res: RunResult) -> RunResult:
+        events = [json.loads(l) for l in stdout.splitlines()
+                  if l.strip().startswith("{")]
+        usages, texts = [], []
+        for e in events:
+            u = e.get("usage")
+            if isinstance(u, dict) and u.get("input_tokens") is not None:
+                usages.append(u)
+            item = e.get("item") or {}
+            if item.get("type") in ("assistant_message", "agent_message"):
+                txt = item.get("text") or item.get("content")
+                if isinstance(txt, str):
+                    texts.append(txt)
+        if usages:
+            last = usages[-1]
+            res.total_input_tokens = last.get("input_tokens")
+            res.total_output_tokens = last.get("output_tokens")
+            res.cached_tokens = last.get("cached_input_tokens")
+            res.initial_tokens = usages[0].get("input_tokens")
+        res.answer = texts[-1] if texts else None
+        reg: dict[str, int] = {}
+        _walk_tool_calls(events, reg)
+        res.tool_register = reg
+        res.tool_calls = sum(reg.values())
+        return res
+
+
+class QwenCodeAdapter(Adapter):
+    name = "qwen-code"
+    supports_mcp = True
+
+    def prepare(self, run_dir: Path, model: str, arm: str) -> None:
+        s: dict = {"tools": {"approvalMode": "yolo"}}
+        if arm == "mcp":
+            s["mcpServers"] = {"github": {"command": self.mcp_bin,
+                                          "args": ["stdio"], "trust": True}}
+        (run_dir / ".qwen").mkdir(exist_ok=True)
+        (run_dir / ".qwen" / "settings.json").write_text(json.dumps(s, indent=1))
+        if arm == "mcp":
+            import subprocess
+            subprocess.run(["qwen", "mcp", "approve", "github"], cwd=str(run_dir),
+                           env=self.env(model), capture_output=True, text=True)
+
+    def command(self, model: str, arm: str) -> list[str]:
+        return ["qwen", "--prompt", prompt(), "--output-format", "json"]
+
+    def env(self, model: str) -> dict[str, str]:
+        env = super().env(model)
+        base, key = endpoint_for(model)
+        env["OPENAI_BASE_URL"] = base
+        env["OPENAI_API_KEY"] = key or "local"
+        env["OPENAI_MODEL"] = model if model in LOCAL_MODELS else openrouter_id(model)
+        return env
+
+    def parse(self, stdout, stderr, res: RunResult) -> RunResult:
+        events = json.loads(stdout)
+        us = [e["usage"] for e in events
+              if isinstance(e.get("usage"), dict) and e["usage"].get("total_tokens")]
+        if us:
+            res.initial_tokens = us[0].get("input_tokens")
+            res.total_input_tokens = us[-1].get("input_tokens")
+            res.total_output_tokens = us[-1].get("output_tokens")
+            res.cached_tokens = us[-1].get("cache_read_input_tokens")
+        result = next((e for e in events if e.get("type") == "result"), {})
+        res.answer = result.get("result")
+        reg: dict[str, int] = {}
+        _walk_tool_calls(events, reg)
+        res.tool_register = reg
+        res.tool_calls = sum(reg.values())
+        return res
+
+
+class PiAdapter(Adapter):
+    name = "pi"
+    supports_mcp = False        # verified: pi 0.73.1 ships no MCP client
+
+    def prepare(self, run_dir: Path, model: str, arm: str) -> None:
+        pass
+
+    def command(self, model: str, arm: str) -> list[str]:
+        provider = "glm" if model == "glm-5.2" else "bench"
+        return ["pi", "-p", "--mode", "json", "--thinking", "off",
+                "--provider", provider, "--model", model, prompt()]
+
+    def parse(self, stdout, stderr, res: RunResult) -> RunResult:
+        events = [json.loads(l) for l in stdout.splitlines()
+                  if l.strip().startswith("{")]
+        turns = [e for e in events if e.get("type") == "turn_end"]
+        usages = [(t.get("message") or {}).get("usage") or {} for t in turns]
+        usages = [u for u in usages if u]
+        if usages:
+            res.initial_tokens = usages[0].get("input")
+            res.total_input_tokens = sum(u.get("input") or 0 for u in usages)
+            res.total_output_tokens = sum(u.get("output") or 0 for u in usages)
+            res.cached_tokens = sum(u.get("cacheRead") or 0 for u in usages)
+        final = next((e for e in reversed(events) if e.get("type") == "agent_end"), {})
+        msgs = final.get("messages") or []
+        for m in reversed(msgs):
+            if m.get("role") == "assistant":
+                parts = [c.get("text") for c in (m.get("content") or [])
+                         if isinstance(c, dict) and c.get("type") == "text"]
+                if parts:
+                    res.answer = "\n".join(p for p in parts if p)
+                    break
+        reg: dict[str, int] = {}
+        _walk_tool_calls(events, reg)
+        res.tool_register = reg
+        res.tool_calls = sum(reg.values())
+        return res
+
+
+ADAPTERS = {a.name: a for a in (ClaudeCodeAdapter, CodexAdapter,
+                                QwenCodeAdapter, PiAdapter)}

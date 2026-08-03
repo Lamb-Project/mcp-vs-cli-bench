@@ -1,0 +1,10 @@
+[project]
+name = "mcp-vs-cli-bench"
+version = "0.1.0"
+description = "Open benchmark: MCP tool use vs CLI tool use across agent scaffoldings and models"
+requires-python = ">=3.11"
+dependencies = ["matplotlib>=3.8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

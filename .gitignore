@@ -1,0 +1,6 @@
+results/runs/
+results/shapes/
+__pycache__/
+*.pyc
+.venv*/
+bin/github-mcp-server

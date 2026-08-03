@@ -182,3 +182,231 @@ INFO:     127.0.0.1:60751 - "POST /v1/chat/completions HTTP/1.1" 200 OK
 INFO:     127.0.0.1:60751 - "POST /v1/chat/completions HTTP/1.1" 200 OK
 INFO:     127.0.0.1:60758 - "POST /v1/chat/completions HTTP/1.1" 200 OK
 INFO:     127.0.0.1:60760 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60760 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60768 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60771 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60766 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60770 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60760 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60777 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60777 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60783 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60784 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60786 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60777 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60777 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60783 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+[92m14:31:22 - LiteLLM Proxy:ERROR[0m: common_request_processing.py:848 - litellm.proxy.proxy_server._handle_llm_api_exception(): Exception occured - litellm.BadRequestError: OpenAIException - Unsupported value: 'reasoning_effort' does not support 'minimal' with this model. Supported values are: 'none', 'low', 'medium', 'high', and 'xhigh'.. Received Model Group=gpt-5.2
+Available Model Group Fallbacks=None
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/llms/openai/openai.py", line 1065, in async_streaming
+    headers, response = await self.make_openai_chat_completion_request(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/litellm_core_utils/logging_utils.py", line 289, in async_wrapper
+    result = await func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/llms/openai/openai.py", line 447, in make_openai_chat_completion_request
+    raise e
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/llms/openai/openai.py", line 427, in make_openai_chat_completion_request
+    raw_response = await openai_aclient.chat.completions.with_raw_response.create(**data, timeout=timeout)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/openai/_legacy_response.py", line 386, in wrapped
+    return cast(LegacyAPIResponse[R], await func(*args, **kwargs))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/openai/resources/chat/completions/completions.py", line 2907, in create
+    return await self._post(
+           ^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/openai/_base_client.py", line 1992, in post
+    return await self.request(cast_to, opts, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/openai/_base_client.py", line 1777, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.BadRequestError: Error code: 400 - {'error': {'message': "Unsupported value: 'reasoning_effort' does not support 'minimal' with this model. Supported values are: 'none', 'low', 'medium', 'high', and 'xhigh'.", 'type': 'invalid_request_error', 'param': 'reasoning_effort', 'code': 'unsupported_value'}}
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/main.py", line 656, in acompletion
+    response = await init_response
+               ^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/llms/openai/openai.py", line 1115, in async_streaming
+    raise OpenAIError(
+litellm.llms.openai.common_utils.OpenAIError: Error code: 400 - {'error': {'message': "Unsupported value: 'reasoning_effort' does not support 'minimal' with this model. Supported values are: 'none', 'low', 'medium', 'high', and 'xhigh'.", 'type': 'invalid_request_error', 'param': 'reasoning_effort', 'code': 'unsupported_value'}}
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/proxy_server.py", line 8982, in chat_completion
+    result = await base_llm_response_processor.base_process_llm_request(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/common_request_processing.py", line 1684, in base_process_llm_request
+    responses = await llm_responses
+                ^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 1979, in acompletion
+    raise e
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 1955, in acompletion
+    response = await self.async_function_with_fallbacks(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 6392, in async_function_with_fallbacks
+    return await self.async_function_with_fallbacks_common_utils(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 6354, in async_function_with_fallbacks_common_utils
+    raise original_exception
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 6383, in async_function_with_fallbacks
+    response = await self.async_function_with_retries(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 6527, in async_function_with_retries
+    self.should_retry_this_error(
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 6706, in should_retry_this_error
+    raise error
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 6484, in async_function_with_retries
+    response = await self.make_call(original_function, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 6638, in make_call
+    response = await response
+               ^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 2897, in _acompletion
+    raise e
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 2848, in _acompletion
+    response = await _response
+               ^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/utils.py", line 1873, in wrapper_async
+    raise e
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/utils.py", line 1690, in wrapper_async
+    result = await original_function(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/main.py", line 709, in acompletion
+    raise exception_type(
+          ^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py", line 2510, in exception_type
+    raise e  # it's already mapped
+    ^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py", line 2276, in exception_type
+    _map_openai_exception(
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py", line 346, in _map_openai_exception
+    raise BadRequestError(
+litellm.exceptions.BadRequestError: litellm.BadRequestError: OpenAIException - Unsupported value: 'reasoning_effort' does not support 'minimal' with this model. Supported values are: 'none', 'low', 'medium', 'high', and 'xhigh'.. Received Model Group=gpt-5.2
+Available Model Group Fallbacks=None
+INFO:     127.0.0.1:60791 - "POST /v1/chat/completions HTTP/1.1" 400 Bad Request
+[92m14:31:24 - LiteLLM Proxy:ERROR[0m: common_request_processing.py:848 - litellm.proxy.proxy_server._handle_llm_api_exception(): Exception occured - litellm.BadRequestError: OpenAIException - Unsupported value: 'reasoning_effort' does not support 'minimal' with this model. Supported values are: 'none', 'low', 'medium', and 'high'.. Received Model Group=gpt-5.1
+Available Model Group Fallbacks=None
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/llms/openai/openai.py", line 1065, in async_streaming
+    headers, response = await self.make_openai_chat_completion_request(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/litellm_core_utils/logging_utils.py", line 289, in async_wrapper
+    result = await func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/llms/openai/openai.py", line 447, in make_openai_chat_completion_request
+    raise e
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/llms/openai/openai.py", line 427, in make_openai_chat_completion_request
+    raw_response = await openai_aclient.chat.completions.with_raw_response.create(**data, timeout=timeout)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/openai/_legacy_response.py", line 386, in wrapped
+    return cast(LegacyAPIResponse[R], await func(*args, **kwargs))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/openai/resources/chat/completions/completions.py", line 2907, in create
+    return await self._post(
+           ^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/openai/_base_client.py", line 1992, in post
+    return await self.request(cast_to, opts, stream=stream, stream_cls=stream_cls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/openai/_base_client.py", line 1777, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.BadRequestError: Error code: 400 - {'error': {'message': "Unsupported value: 'reasoning_effort' does not support 'minimal' with this model. Supported values are: 'none', 'low', 'medium', and 'high'.", 'type': 'invalid_request_error', 'param': 'reasoning_effort', 'code': 'unsupported_value'}}
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/main.py", line 656, in acompletion
+    response = await init_response
+               ^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/llms/openai/openai.py", line 1115, in async_streaming
+    raise OpenAIError(
+litellm.llms.openai.common_utils.OpenAIError: Error code: 400 - {'error': {'message': "Unsupported value: 'reasoning_effort' does not support 'minimal' with this model. Supported values are: 'none', 'low', 'medium', and 'high'.", 'type': 'invalid_request_error', 'param': 'reasoning_effort', 'code': 'unsupported_value'}}
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/proxy_server.py", line 8982, in chat_completion
+    result = await base_llm_response_processor.base_process_llm_request(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/common_request_processing.py", line 1684, in base_process_llm_request
+    responses = await llm_responses
+                ^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 1979, in acompletion
+    raise e
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 1955, in acompletion
+    response = await self.async_function_with_fallbacks(**kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 6392, in async_function_with_fallbacks
+    return await self.async_function_with_fallbacks_common_utils(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 6354, in async_function_with_fallbacks_common_utils
+    raise original_exception
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 6383, in async_function_with_fallbacks
+    response = await self.async_function_with_retries(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 6527, in async_function_with_retries
+    self.should_retry_this_error(
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 6706, in should_retry_this_error
+    raise error
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 6484, in async_function_with_retries
+    response = await self.make_call(original_function, *args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 6638, in make_call
+    response = await response
+               ^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 2897, in _acompletion
+    raise e
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/router.py", line 2848, in _acompletion
+    response = await _response
+               ^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/utils.py", line 1873, in wrapper_async
+    raise e
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/utils.py", line 1690, in wrapper_async
+    result = await original_function(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/main.py", line 709, in acompletion
+    raise exception_type(
+          ^^^^^^^^^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py", line 2510, in exception_type
+    raise e  # it's already mapped
+    ^^^^^^^
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py", line 2276, in exception_type
+    _map_openai_exception(
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/litellm_core_utils/exception_mapping_utils.py", line 346, in _map_openai_exception
+    raise BadRequestError(
+litellm.exceptions.BadRequestError: litellm.BadRequestError: OpenAIException - Unsupported value: 'reasoning_effort' does not support 'minimal' with this model. Supported values are: 'none', 'low', 'medium', and 'high'.. Received Model Group=gpt-5.1
+Available Model Group Fallbacks=None
+INFO:     127.0.0.1:60793 - "POST /v1/chat/completions HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60796 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60832 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60832 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60844 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60846 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60849 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60860 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60860 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60880 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60888 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60899 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60906 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60906 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60906 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60906 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60923 - "POST /v1/chat/completions HTTP/1.1" 200 OK

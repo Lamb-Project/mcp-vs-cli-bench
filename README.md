@@ -73,11 +73,28 @@ Requirements, and each one changes the numbers if skipped:
   so whichever arm runs second otherwise starts warm and looks cheap.
 
 ```bash
-uv venv && uv pip install -e .
-python -m bench.runner --estimate-only     # spend estimate first
+./setup/install.sh                  # scaffoldings, MCP server, proxy; checks preconditions
+python setup/configure_pi.py        # register pi's providers
+.venv-litellm/bin/litellm --config setup/litellm_config.yaml --port 4000 &
+
+python -m bench.runner --estimate-only     # spend estimate; refuses to exceed budget
 python -m bench.runner --budget 5.00
-python -m bench.analyze                    # tables + figures
+python -m bench.consolidate                # merge runs, later supersedes earlier
+python -m bench.analyze --runs results/final.jsonl
+./paper/render.sh                          # paper.pdf
 ```
+
+`install.sh` refuses to proceed if a precondition is wrong rather than producing
+numbers that will not reproduce.
+
+**Everything routes through the LiteLLM proxy**, for two reasons beyond
+telemetry. A scaffolding that delegates to sub-agents bills those children to
+separate threads whose tokens never reach the parent's usage record, and the
+proxy sees those requests. And `max_budget` caps spend upstream of the harness,
+so a looping agent cannot overrun the ceiling. The proxy adds no tokens, so
+routing through it does not change what is measured. It also pins
+`reasoning_effort` on hosted models, which is the only layer where "thinking
+off" cannot be forgotten per-scaffolding.
 
 ## Layout
 

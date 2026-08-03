@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
-"""Fill the paper's results section from the consolidated dataset.
+"""Regenerate the paper's results sections from the consolidated dataset.
 
-Every number in the paper comes from here rather than being typed, so the
-manuscript cannot drift from the data. Re-running after new results refreshes
-the paper; nothing is hand-entered.
+Every number in the paper is produced here rather than typed, so the manuscript
+cannot drift from the data.
+
+Sections are replaced **by heading**, not by consuming a one-shot placeholder.
+Placeholder-filling is not idempotent: once the marker is gone a re-run silently
+does nothing, which is exactly how a stale completion table survived a re-fill
+after three more cells landed. Replacing whole sections means the paper always
+reflects the current dataset, however many times this runs.
 """
 from __future__ import annotations
 
@@ -18,48 +23,65 @@ PAPER = ROOT / "paper" / "paper.md"
 DATA = ROOT / "results" / "final.jsonl"
 
 
-def section(rows: list[dict], name: str) -> str:
+def part(rows: list[dict], name: str) -> str:
     txt = summary(rows)
     m = re.search(rf"### {re.escape(name)}\n(.*?)(?=\n### |\Z)", txt, re.S)
     return m.group(1).strip() if m else ""
 
 
-def headline(rows: list[dict]) -> tuple[str, str]:
-    """The abstract sentence and the ratio spread, computed."""
-    body = section(rows, "MCP / CLI total-input ratio")
+def replace_section(text: str, heading: str, body: str) -> str:
+    """Swap the body of a `### heading` section, keeping the heading itself."""
+    # stop at the next heading of ANY level: "^## " also matches "^### ", so a
+    # single-# lookahead let section 5.1 swallow 5.2 through 5.5.
+    pat = re.compile(rf"(^### {re.escape(heading)}\n)(.*?)(?=^#{{2,4}} |\Z)",
+                     re.S | re.M)
+    if not pat.search(text):
+        raise KeyError(f"section not found: {heading}")
+    return pat.sub(lambda m: m.group(1) + "\n" + body.strip() + "\n\n", text)
+
+
+def abstract_sentence(rows: list[dict]) -> tuple[str, str]:
+    body = part(rows, "MCP / CLI total-input ratio")
     m = re.search(r"(\d+) comparable cells · median \*\*([\d.]+)×\*\* · "
                   r"range ([\d.]+)×–([\d.]+)×", body)
     if not m:
-        return "", ""
+        return "", body
     n, med, lo, hi = m.groups()
     spread = float(hi) / float(lo)
-    abstract = (
-        f"Across {n} comparable cells the MCP arm costs a median **{med}×** the "
-        f"tokens of the CLI arm, but the ratio ranges from **{lo}×** to "
-        f"**{hi}×** — a {spread:.0f}-fold spread in the ratio itself. The same "
-        f"protocol, task and fixture can make MCP either substantially cheaper "
-        f"or substantially more expensive than a command line, depending on "
-        f"which scaffolding and model run underneath. We therefore report a "
-        f"distribution rather than a ratio, and find that the choice of "
-        f"scaffolding moves total cost further than the choice of surface does.")
-    return abstract, body
+    return (f"Across {n} comparable cells the MCP arm costs a median **{med}×** "
+            f"the tokens of the CLI arm, but the ratio ranges from **{lo}×** to "
+            f"**{hi}×** — a {spread:.0f}-fold spread in the ratio itself. The "
+            f"same protocol, task and fixture can make MCP either substantially "
+            f"cheaper or substantially more expensive than a command line, "
+            f"depending on which scaffolding and model run underneath. We "
+            f"therefore report a distribution rather than a ratio, and find that "
+            f"the choice of scaffolding moves total cost further than the choice "
+            f"of surface does."), body
 
 
-def completion_line(rows: list[dict]) -> str:
-    out = []
+def completion_table(rows: list[dict]) -> str:
+    lines = ["| Arm | Scored runs | Fully complete | Rate | Mean completion |",
+             "|---|---:|---:|---:|---:|"]
     for arm in ("cli", "mcp"):
         vals = [r["completion_pct"] for r in rows
                 if not r.get("void") and r["arm"] == arm
                 and r.get("completion_pct") is not None]
-        if vals:
-            full = sum(1 for v in vals if v == 100.0)
-            out.append((ARM_LABEL[arm], len(vals), full, 100 * full / len(vals),
-                        sum(vals) / len(vals)))
-    lines = ["| Arm | Scored runs | Fully complete | Rate | Mean completion |",
-             "|---|---:|---:|---:|---:|"]
-    for label, n, full, rate, mean in out:
-        lines.append(f"| {label} | {n} | {full} | {rate:.0f}% | {mean:.1f}% |")
+        if not vals:
+            continue
+        full = sum(1 for v in vals if v == 100.0)
+        lines.append(f"| {ARM_LABEL[arm]} | {len(vals)} | {full} | "
+                     f"{100*full/len(vals):.0f}% | {sum(vals)/len(vals):.1f}% |")
     return "\n".join(lines)
+
+
+def cost_table(live: list[dict]) -> tuple[str, float]:
+    costs = [(r["theoretical_cost_usd"], r) for r in live
+             if r.get("theoretical_cost_usd")]
+    tot = sum(c for c, _ in costs)
+    top = sorted(costs, key=lambda x: -x[0])[:5]
+    tbl = "\n".join(f"| {r['scaffolding']}/{r['model']} | {ARM_LABEL[r['arm']]} "
+                    f"| ${c:.4f} |" for c, r in top)
+    return tbl, tot
 
 
 def main() -> None:
@@ -67,81 +89,51 @@ def main() -> None:
     live = [r for r in rows if not r.get("void")]
     t = PAPER.read_text()
 
-    abstract, ratio_tbl = headline(rows)
+    abstract, ratio_tbl = abstract_sentence(rows)
+    t = re.sub(r"(?<=\n)Across \d+ comparable cells the MCP arm costs.*?"
+               r"choice of surface does\.", abstract, t, flags=re.S)
     t = t.replace("‹TBD: headline result.›", abstract)
 
-    t = t.replace("""### 5.1 Results table
-
-‹TBD›""", f"""### 5.1 Results table
-
-{len(rows)} cells: **{len(live)} live**, **{len(rows)-len(live)} void**. Void cells
+    t = replace_section(t, "5.1 Results table", f"""{len(rows)} cells: **{len(live)} live**, **{len(rows)-len(live)} void**. Void cells
 carry their reason; a void cell is a claim about what a scaffolding cannot do,
 not a zero.
 
 {markdown_table(rows)}""")
 
-    t = t.replace("""### 5.2 Token cost
-
-![Total input tokens per run, by surface](figures/tokens.pdf)
-
-‹TBD›""", f"""### 5.2 Token cost
-
-![Total input tokens per run, by surface](figures/tokens.pdf)
+    t = replace_section(t, "5.2 Token cost", f"""![Total input tokens per run, by surface](figures/tokens.pdf)
 
 {ratio_tbl}
 
 The spread is the result. A practitioner reading any single published figure —
 1.2×, 35×, or anything between — is reading one cell of this table.""")
 
-    t = t.replace("""### 5.3 Tool calls and the tool register
+    t = replace_section(t, "5.3 Tool calls and the tool register",
+                        f"""![Tool calls to complete the same workflow](figures/toolcalls.pdf)
 
-![Tool calls to complete the same workflow](figures/toolcalls.pdf)
-
-‹TBD›""", f"""### 5.3 Tool calls and the tool register
-
-![Tool calls to complete the same workflow](figures/toolcalls.pdf)
-
-{section(rows, "Scaffolding overhead — same model, same arm")}
+{part(rows, "Scaffolding overhead — same model, same arm")}
 
 Which tools were actually called, aggregated by arm:
 
 {tool_register_summary(rows)}""")
 
-    t = t.replace("""### 5.4 Task completion
+    t = replace_section(t, "5.4 Task completion",
+                        f"""![Task completion against the five-item rubric](figures/completion.pdf)
 
-![Task completion against the five-item rubric](figures/completion.pdf)
-
-‹TBD›""", f"""### 5.4 Task completion
-
-![Task completion against the five-item rubric](figures/completion.pdf)
-
-{completion_line(rows)}
+{completion_table(rows)}
 
 Mean completion is near-identical between arms while the rate of *fully*
 completed runs is not: the MCP arm does not produce worse answers so much as
 more partial ones.""")
 
-    costs = [(r["theoretical_cost_usd"], r) for r in live
-             if r.get("theoretical_cost_usd")]
-    tot = sum(c for c, _ in costs)
-    top = sorted(costs, key=lambda x: -x[0])[:5]
-    cost_tbl = "\n".join(
-        [f"| {r['scaffolding']}/{r['model']} | {ARM_LABEL[r['arm']]} | ${c:.4f} |"
-         for c, r in top])
-    t = t.replace("""### 5.5 Cost
-
-![Theoretical cost per run at list prices](figures/cost.pdf)
-
-‹TBD›""", f"""### 5.5 Cost
-
-![Theoretical cost per run at list prices](figures/cost.pdf)
+    tbl, tot = cost_table(live)
+    t = replace_section(t, "5.5 Cost", f"""![Theoretical cost per run at list prices](figures/cost.pdf)
 
 Theoretical cost across all scored runs totals **${tot:.2f}** at list prices.
 The five most expensive individual runs:
 
 | Cell | Arm | Cost |
 |---|---|---:|
-{cost_tbl}
+{tbl}
 
 This is a modelled figure, not an invoice: one public price list is applied
 uniformly to every cell including those served on local hardware, because
@@ -153,8 +145,8 @@ comparing billing arrangements would not compare workloads.""")
 by `bench/fill_paper.py`; nothing is hand-entered.""")
 
     PAPER.write_text(t)
-    remaining = t.count("‹TBD")
-    print(f"filled paper from {len(rows)} cells; {remaining} TBD markers remain")
+    print(f"regenerated results sections from {len(rows)} cells "
+          f"({len(live)} live); {t.count('‹TBD')} placeholders remain")
 
 
 if __name__ == "__main__":

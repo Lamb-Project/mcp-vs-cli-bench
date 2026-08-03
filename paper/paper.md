@@ -337,11 +337,11 @@ not a zero.
 | pi | gpt-5.1 | MCP | ⛔ | | | | | | | | <!-- pi ships no MCP client -->
 | pi | gpt-5.2 | CLI | 1,277 | 31,304 | 87.5 | 15 | 0.933 | 100.0 | 0.0626 | 28.7 |
 | pi | gpt-5.2 | MCP | ⛔ | | | | | | | | <!-- pi ships no MCP client -->
-| pi | gpt-5.6-luna | CLI | 0 | 0 | — | 0 | — | — | — | 0.4 |
+| pi | gpt-5.6-luna | CLI | 3 | 6,766 | 79.0 | 6 | 0.833 | 100.0 | 0.0011 | 18.3 |
 | pi | gpt-5.6-luna | MCP | ⛔ | | | | | | | | <!-- pi ships no MCP client -->
-| pi | gpt-5.6-sol | CLI | 0 | 0 | — | 0 | — | — | — | 0.5 |
+| pi | gpt-5.6-sol | CLI | 3 | 4,725 | 82.8 | 4 | 1.0 | 100.0 | 0.0385 | 22.2 |
 | pi | gpt-5.6-sol | MCP | ⛔ | | | | | | | | <!-- pi ships no MCP client -->
-| pi | gpt-5.6-terra | CLI | 0 | 0 | — | 0 | — | — | — | 0.4 |
+| pi | gpt-5.6-terra | CLI | 3 | 4,398 | 70.9 | 5 | 0.8 | 100.0 | 0.0074 | 10.5 |
 | pi | gpt-5.6-terra | MCP | ⛔ | | | | | | | | <!-- pi ships no MCP client -->
 | pi | qwen3.5:122b | CLI | 1,678 | 18,262 | 0.0 | 6 | 1.0 | 100.0 | 0.0072 | 89.1 |
 | pi | qwen3.5:122b | MCP | ⛔ | | | | | | | | <!-- pi ships no MCP client -->
@@ -414,10 +414,13 @@ The spread is the result. A practitioner reading any single published figure —
 | gpt-5.1 | codex | 61,169 | 2 | 100.0 |
 | gpt-5.2 | pi | 31,304 | 15 | 100.0 |
 | gpt-5.2 | codex | 160,294 | 22 | 100.0 |
+| gpt-5.6-luna | pi | 6,766 | 6 | 100.0 |
 | gpt-5.6-luna | codex | 25,046 | 2 | 100.0 |
 | gpt-5.6-luna | qwen-code | 77,984 | 5 | 100.0 |
+| gpt-5.6-sol | pi | 4,725 | 4 | 100.0 |
 | gpt-5.6-sol | codex | 28,631 | 4 | 100.0 |
 | gpt-5.6-sol | qwen-code | 133,654 | 6 | 100.0 |
+| gpt-5.6-terra | pi | 4,398 | 5 | 100.0 |
 | gpt-5.6-terra | codex | 28,426 | 4 | 100.0 |
 | gpt-5.6-terra | qwen-code | 106,225 | 5 | 100.0 |
 | opus-5 | claude-code | 66,676 | 4 | 100.0 |
@@ -433,7 +436,7 @@ Which tools were actually called, aggregated by arm:
 
 | Arm | Tool | Calls |
 |---|---|---|
-| CLI | `bash` | 45 |
+| CLI | `bash` | 58 |
 | CLI | `web_fetch` | 36 |
 | CLI | `shell:git` | 24 |
 | CLI | `shell:aawd-e1-fixture` | 18 |
@@ -441,8 +444,8 @@ Which tools were actually called, aggregated by arm:
 | CLI | `run_shell_command` | 14 |
 | CLI | `shell:curl` | 12 |
 | CLI | `shell:ls` | 8 |
+| CLI | `read` | 7 |
 | CLI | `shell:head` | 6 |
-| CLI | `read` | 5 |
 | CLI | `shell:find` | 4 |
 | CLI | `shell:(` | 2 |
 | MCP | `mcp__github__get_file_contents` | 80 |
@@ -464,7 +467,7 @@ Which tools were actually called, aggregated by arm:
 
 | Arm | Scored runs | Fully complete | Rate | Mean completion |
 |---|---:|---:|---:|---:|
-| CLI | 27 | 21 | 78% | 84.4% |
+| CLI | 30 | 24 | 80% | 86.0% |
 | MCP | 21 | 12 | 57% | 83.8% |
 
 Mean completion is near-identical between arms while the rate of *fully*
@@ -475,7 +478,7 @@ more partial ones.
 
 ![Theoretical cost per run at list prices](figures/cost.pdf)
 
-Theoretical cost across all scored runs totals **$10.05** at list prices.
+Theoretical cost across all scored runs totals **$10.10** at list prices.
 The five most expensive individual runs:
 
 | Cell | Arm | Cost |

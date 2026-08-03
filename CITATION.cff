@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this benchmark, please cite it."
+title: "mcp-vs-cli-bench: an open benchmark for MCP versus CLI tool use across agent scaffoldings and models"
+type: software
+license: MIT
+repository-code: "https://github.com/Lamb-Project/mcp-vs-cli-bench"
+authors:
+  - family-names: Alier
+    given-names: Marc
+    affiliation: "Universitat Politècnica de Catalunya"
+keywords:
+  - Model Context Protocol
+  - LLM agents
+  - tool use
+  - benchmark

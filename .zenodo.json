@@ -1,0 +1,18 @@
+{
+  "title": "mcp-vs-cli-bench: an open benchmark for MCP versus CLI tool use across agent scaffoldings and models",
+  "upload_type": "software",
+  "license": "MIT",
+  "creators": [
+    {"name": "Alier, Marc", "affiliation": "Universitat Politècnica de Catalunya"}
+  ],
+  "description": "<p>An open, re-runnable benchmark comparing tool use over the Model Context Protocol against tool use over a command-line interface, across four agent scaffoldings (Claude Code, OpenAI Codex, qwen-code, pi) and models spanning hosted frontier systems and locally-served open weights.</p><p>One fixed workflow with five independently checkable sub-answers is run twice per scaffolding/model pair, once with a GitHub MCP server attached and once with the scaffolding's native shell. Each run records initial context size, total and cached tokens, tool-call count and a register of which tools were called, tool-call success, percentage of the task completed against a rubric, a theoretical cost from one public price list applied uniformly, and wall time.</p><p>The repository contains the harness, the task and rubric, the scaffolding adapters, the cost model, the proxy configuration, and the raw run logs, so every published number can be re-derived.</p>",
+  "keywords": [
+    "Model Context Protocol", "MCP", "LLM agents", "agent benchmark",
+    "tool use", "command-line interface", "token cost", "context window",
+    "agent scaffolding", "reproducibility"
+  ],
+  "related_identifiers": [
+    {"identifier": "https://github.com/Lamb-Project/mcp-vs-cli-bench",
+     "relation": "isSupplementTo", "scheme": "url"}
+  ]
+}

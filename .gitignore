@@ -1,5 +1,6 @@
 results/runs/
 results/shapes/
+!results/README.md
 __pycache__/
 *.pyc
 .venv*/

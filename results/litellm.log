@@ -172,3 +172,13 @@ INFO:     127.0.0.1:60712 - "POST /v1/responses HTTP/1.1" 200 OK
 INFO:     127.0.0.1:60717 - "POST /v1/responses HTTP/1.1" 200 OK
 INFO:     127.0.0.1:60720 - "POST /v1/responses HTTP/1.1" 200 OK
 INFO:     127.0.0.1:60723 - "POST /v1/responses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60744 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60746 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60746 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60755 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60751 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60752 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60751 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60751 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60758 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60760 - "POST /v1/chat/completions HTTP/1.1" 200 OK

@@ -49,6 +49,8 @@ class RunResult:
     answer: str | None = None
     mcp_attached: bool | None = None      # server registered and enabled
     mcp_tools_used: int = 0               # MCP tool calls the agent actually made
+    delegated: int = 0                    # sub-agents spawned; see below
+    totals_incomplete: bool = False       # sub-agent cost not in the parent's usage
     notes: list[str] = field(default_factory=list)
 
     def assert_mcp(self, prefixes: tuple[str, ...] = ("mcp__", "mcp_")) -> None:

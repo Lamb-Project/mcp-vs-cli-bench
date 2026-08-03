@@ -325,7 +325,44 @@ reasoning output and for an implausible output-token count.
 
 ## 6. Discussion
 
-‹TBD›
+**A ratio is the wrong shape of answer.** The practitioner literature argues
+about whether MCP costs 1.2× or 35×. Our measurement says the question is
+malformed: across comparable cells the ratio spans roughly an order of magnitude,
+and the same protocol against the same task can cost more or less than a CLI
+depending on which scaffolding and which model it runs under. Any single number
+reported without naming both is describing one cell.
+
+**The scaffolding dominates the surface.** The largest effect in our data is not
+MCP versus CLI at all. On an identical model, arm and task, one scaffolding
+completed the work in a few thousand tokens while another took two orders of
+magnitude more. That difference exceeds every MCP-versus-CLI ratio we measured.
+A practitioner choosing how to reduce agent cost should look at the harness
+before the protocol — which is not what the current discussion is about.
+
+**Tool-call count is a poor proxy for cost.** Tokens per tool call varied by more
+than sixfold across cells. A model that makes few, fat calls can cost as much as
+one making many thin ones, because each turn re-sends the accumulated
+conversation and, on the MCP arm, the registry. Reporting call counts without
+tokens — as several practitioner comparisons do — can invert the ranking.
+
+**Structured tools may help weak models and cost strong ones.** Where MCP was
+cheaper, it was on smaller or weaker models, whose CLI arms made more calls and
+burned more tokens exploring. A registry that tells the model what operations
+exist can repay its fixed cost by reducing floundering. This is the least certain
+of our observations and the one most worth testing at depth: it rests on few
+cells and it cuts directly against the prevailing advice.
+
+**Caching does not resolve the difference.** Cache-hit rates were high and
+comparable on both arms, so the registry does land in the cached prefix — and it
+does not close the gap, because the CLI arm caches equally well. An argument that
+prompt caching makes MCP overhead irrelevant is not supported here.
+
+**The instrument is the contribution.** Five of the hazards in §4 were found by
+producing a plausible wrong answer first, and three of them — a silently
+unattached server, a scaffolding merging config from outside the run directory,
+and sub-agent tokens billed to threads the parent cannot see — would have
+produced clean, publishable, wrong tables. We expect any independent replication
+to hit at least one of them.
 
 ## 7. Limitations
 
@@ -355,7 +392,24 @@ that reason.
 
 ## 8. Conclusion
 
-‹TBD›
+We set out to measure what it costs to give an agent a capability through a tool
+catalogue rather than through a command line, and found that the question cannot
+be answered with a number. Across four scaffoldings and nine models the ratio
+moves by roughly an order of magnitude, and it is not even consistent in sign.
+
+Two things are worth taking away from that. The first is that the variable the
+field is arguing about is smaller than a variable it is largely ignoring: the
+scaffolding's own overhead moved our results further than the protocol did. The
+second is that measuring this is harder than it looks. Configuration leaks
+between arms, servers attach silently or not at all, approval modes remove tools
+from context without saying so, sub-agents spend tokens off-thread, and caches
+persist across runs — each producing numbers that look fine.
+
+We therefore publish the instrument rather than a verdict: the task, the rubric,
+the adapters, the hazards, and every raw run. The result we would most like to be
+contradicted is the one we hold least firmly — that structured tool catalogues
+can pay for themselves on weaker models — and the benchmark exists so that
+contradicting it costs an afternoon rather than a research programme.
 
 ## Data and code availability
 

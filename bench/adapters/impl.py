@@ -26,24 +26,24 @@ from bench.adapters.base import Adapter, RunResult, prompt
 # four scaffoldings point at them at all.
 GLM_BASE = "http://localhost:8000/v1"
 OLLAMA_BASE = "http://192.168.1.47:11434/v1"
-OPENAI_BASE = "https://api.openai.com/v1"
+# Everything goes through the LiteLLM proxy. Sub-agent requests cross it too, so
+# proxying is what makes token totals complete when a scaffolding delegates; it
+# also enforces the spend ceiling upstream of the harness. The proxy contributes
+# no tokens, so this is measurement-neutral.
+PROXY_BASE = "http://localhost:4000/v1"
+PROXY_KEY = "sk-e1-local"
 
 LOCAL_MODELS = {"glm-5.2": GLM_BASE, "qwen3.5:122b": OLLAMA_BASE,
                 "qwen3.6:27b": OLLAMA_BASE}
 
 
 def endpoint_for(model: str) -> tuple[str, str]:
-    """(base_url, api_key) for a model.
+    """(base_url, api_key) — the proxy, for every model, local or hosted.
 
-    Hosted models go to the OpenAI API directly. OpenRouter is used only as the
-    published price list for the cost model, never as a request path — its key
-    returns 401 and, separately, codex speaks only the Responses API which
-    OpenRouter does not serve.
+    OpenRouter is used only as the published price list for the cost model and
+    never as a request path.
     """
-    if model in LOCAL_MODELS:
-        return LOCAL_MODELS[model], "local"
-    import os
-    return OPENAI_BASE, os.environ.get("OPENAI_API_KEY", "")
+    return PROXY_BASE, PROXY_KEY
 
 
 def openrouter_id(model: str) -> str:

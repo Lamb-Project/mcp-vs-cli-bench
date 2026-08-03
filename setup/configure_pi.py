@@ -29,22 +29,22 @@ def model(mid: str, name: str, ctx: int, cost: dict | None = None) -> dict:
 PROVIDERS = {
     "glm": {
         "name": "GLM-5.2 local (llama-server)",
-        "baseUrl": "http://localhost:8000/v1",
-        "api": "openai-completions", "apiKey": "local",
+        "baseUrl": "http://localhost:4000/v1",
+        "api": "openai-completions", "apiKey": "sk-e1-local",
         "models": [model("glm-5.2", "GLM-5.2 (local)", 131072)],
     },
     "ollama": {
         "name": "Ollama (studio64)",
-        "baseUrl": "http://192.168.1.47:11434/v1",
-        "api": "openai-completions", "apiKey": "local",
+        "baseUrl": "http://localhost:4000/v1",
+        "api": "openai-completions", "apiKey": "sk-e1-local",
         "models": [model("qwen3.5:122b", "Qwen3.5 122B (local)", 131072),
                    model("qwen3.6:27b", "Qwen3.6 27B (local)", 262144)],
     },
     "openai": {
         "name": "OpenAI",
-        "baseUrl": "https://api.openai.com/v1",
+        "baseUrl": "http://localhost:4000/v1",
         "api": "openai-completions",
-        "apiKey": os.environ.get("OPENAI_API_KEY", ""),
+        "apiKey": "sk-e1-local",
         "models": [
             model("gpt-5.6-sol", "GPT-5.6 Sol", 400_000,
                   {"input": 5.0, "output": 30.0, "cacheRead": 0, "cacheWrite": 0}),

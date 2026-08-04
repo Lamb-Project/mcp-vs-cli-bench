@@ -48,3 +48,7 @@ INFO:     Uvicorn running on http://0.0.0.0:4000 (Press CTRL+C to quit)
 [32m    gpt-5.1[0m
 [32m    gpt-5-mini[0m
 INFO:     127.0.0.1:63216 - "GET /health/liveliness HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63402 - "POST /v1/responses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63410 - "POST /v1/responses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63414 - "POST /v1/responses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63420 - "POST /v1/responses HTTP/1.1" 200 OK

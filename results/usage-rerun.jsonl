@@ -1,0 +1,3 @@
+{"ts": "2026-08-04T12:56:04.500798", "tag": "exp1-rerun", "model": "gpt-5.6-luna", "n_messages": 5, "n_tools": 0, "prompt_tokens": 7861, "completion_tokens": 258, "total_tokens": 8119, "cached_tokens": 0, "latency_s": 4.65, "prefilled": 7861}
+{"ts": "2026-08-04T12:56:10.713311", "tag": "exp1-rerun", "model": "gpt-5.6-luna", "n_messages": 8, "n_tools": 0, "prompt_tokens": 16557, "completion_tokens": 296, "total_tokens": 16853, "cached_tokens": 7858, "latency_s": 3.46, "prefilled": 8699}
+{"ts": "2026-08-04T12:56:14.905643", "tag": "exp1-rerun", "model": "gpt-5.6-luna", "n_messages": 11, "n_tools": 0, "prompt_tokens": 17366, "completion_tokens": 93, "total_tokens": 17459, "cached_tokens": 16554, "latency_s": 3.65, "prefilled": 812}

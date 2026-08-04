@@ -12,5 +12,11 @@
   ESTIMATED TOTAL SPEND: $0.51  (10 metered cells)
 
 running 34 cells -> results/runs-rerun.jsonl
-metered spend so far: $5.92 of $5.00
-budget exhausted: $5.92 spent of $5.00 — raise --budget explicitly to continue
+metered spend so far: $0.00 of $5.00
+[1/34] claude-code / sonnet-5 / cli ...
+      -> 100.0%  tools=6 in=99771 cache=90.0% (19s)
+[2/34] claude-code / opus-5 / cli ...
+      -> 100.0%  tools=5 in=67270 cache=87.2% (17s)
+[3/34] codex / gpt-5.6-luna / cli ...
+      -> 100.0%  tools=4 in=41784 cache=58.4% (17s)
+[4/34] codex / gpt-5.6-terra / cli ...

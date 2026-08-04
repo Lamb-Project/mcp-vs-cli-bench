@@ -33,6 +33,9 @@ OLLAMA_BASE = "http://192.168.1.47:11434/v1"
 PROXY_BASE = "http://localhost:4000/v1"
 PROXY_KEY = "sk-e1-local"
 
+# Kept only to mark which models are free; ALL traffic goes through the proxy so
+# that one accounting path covers every cell. Experiment 1 mixed direct and
+# proxied routing and lost the per-request record for the direct cells.
 LOCAL_MODELS = {"glm-5.2": GLM_BASE, "qwen3.5:122b": OLLAMA_BASE,
                 "qwen3.6:27b": OLLAMA_BASE}
 

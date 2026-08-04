@@ -1,4 +1,4 @@
-INFO:     Started server process [80101]
+INFO:     Started server process [16060]
 INFO:     Waiting for application startup.
 
    ██╗     ██╗████████╗███████╗██╗     ██╗     ███╗   ███╗
@@ -8,24 +8,24 @@ INFO:     Waiting for application startup.
    ███████╗██║   ██║   ███████╗███████╗███████╗██║ ╚═╝ ██║
    ╚══════╝╚═╝   ╚═╝   ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝
 
-[92m15:42:13 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=dd218038d5852aeb2f34cdd78392e44f46d0921cfa65c1fda09641ef974b382f not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
-[92m15:42:13 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=openai/glm-5.2 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
-[92m15:42:13 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=bc7e6ed5cd81bbdd936597469186e73be32a2d360d496f6458017bbb9f03887a not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
-[92m15:42:13 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=openai/qwen3.5:122b not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
-[92m15:42:13 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=b3bb46178fc738d288eecb7ec4d7fa3f00f4d9f6f527e9b6b57b427c48353c44 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
-[92m15:42:13 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=openai/qwen3.6:27b not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
-[92m15:42:13 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=29e6b68e19c646294cb487cbe317072022c2f9ec35b20d1d99a674f3fe2da976 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
-[92m15:42:13 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=7cbc85a801115dadae0614ed0f7c8eb7da73fb4883dba2bc88598cfefe49e519 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
-[92m15:42:13 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=8eb963cdd9c9d76caafd134aca2a7c50bf92c769ff69690f753e23b6d67f3691 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
-[92m15:42:13 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=3ae9e3b2deb711161c91933ea3639c3cb2a57b72715d32a0b376d61b01d8b5bc not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
-[92m15:42:13 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=ea26c98689c215adf42fd693dbbbb4fe31452911a1568c2e5990a9830d5385e8 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
-[92m15:42:13 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=f00bbbbd9800e987d1da8c3185d3efaeaad6210ec609d4a7172358cc2212c31e not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m11:18:12 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=dd218038d5852aeb2f34cdd78392e44f46d0921cfa65c1fda09641ef974b382f not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m11:18:12 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=openai/glm-5.2 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m11:18:12 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=bc7e6ed5cd81bbdd936597469186e73be32a2d360d496f6458017bbb9f03887a not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m11:18:12 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=openai/qwen3.5:122b not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m11:18:12 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=b3bb46178fc738d288eecb7ec4d7fa3f00f4d9f6f527e9b6b57b427c48353c44 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m11:18:12 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=openai/qwen3.6:27b not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m11:18:12 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=29e6b68e19c646294cb487cbe317072022c2f9ec35b20d1d99a674f3fe2da976 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m11:18:12 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=7cbc85a801115dadae0614ed0f7c8eb7da73fb4883dba2bc88598cfefe49e519 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m11:18:12 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=8eb963cdd9c9d76caafd134aca2a7c50bf92c769ff69690f753e23b6d67f3691 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m11:18:12 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=3ae9e3b2deb711161c91933ea3639c3cb2a57b72715d32a0b376d61b01d8b5bc not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m11:18:12 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=ea26c98689c215adf42fd693dbbbb4fe31452911a1568c2e5990a9830d5385e8 not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
+[92m11:18:12 - LiteLLM:WARNING[0m: utils.py:2733 - register_model: model=f00bbbbd9800e987d1da8c3185d3efaeaad6210ec609d4a7172358cc2212c31e not in built-in cost map and no prefix/region variant matched; cache cost fields will default to 0. To track cache cost, add cache_creation_input_token_cost and cache_read_input_token_cost to model_info
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:4000 (Press CTRL+C to quit)
 
 [1;37m#------------------------------------------------------------#[0m
 [1;37m#                                                            #[0m
-[1;37m#         'The worst thing about this product is...'          #[0m
+[1;37m#            'The thing I wish you improved is...'            #[0m
 [1;37m#        https://github.com/BerriAI/litellm/issues/new        #[0m
 [1;37m#                                                            #[0m
 [1;37m#------------------------------------------------------------#[0m
@@ -47,40 +47,4 @@ INFO:     Uvicorn running on http://0.0.0.0:4000 (Press CTRL+C to quit)
 [32m    gpt-5.2[0m
 [32m    gpt-5.1[0m
 [32m    gpt-5-mini[0m
-INFO:     127.0.0.1:61482 - "GET /health/liveliness HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61484 - "POST /v1/chat/completions HTTP/1.1" 200 OK
-[92m15:42:59 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
-Requester IP Address:127.0.0.1
-Traceback (most recent call last):
-  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
-    raise ProxyException(
-litellm.proxy._types.ProxyException: No connected db.
-INFO:     127.0.0.1:61487 - "POST /v1/chat/completions HTTP/1.1" 400 Bad Request
-[92m15:42:59 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
-Requester IP Address:127.0.0.1
-Traceback (most recent call last):
-  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
-    raise ProxyException(
-litellm.proxy._types.ProxyException: No connected db.
-INFO:     127.0.0.1:61489 - "POST /v1/chat/completions HTTP/1.1" 400 Bad Request
-[92m15:43:00 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
-Requester IP Address:127.0.0.1
-Traceback (most recent call last):
-  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
-    raise ProxyException(
-litellm.proxy._types.ProxyException: No connected db.
-INFO:     127.0.0.1:61491 - "POST /v1/chat/completions HTTP/1.1" 400 Bad Request
-INFO:     127.0.0.1:61493 - "POST /v1/chat/completions HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61512 - "POST /v1/chat/completions HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61512 - "POST /v1/chat/completions HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61512 - "POST /v1/chat/completions HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61512 - "POST /v1/chat/completions HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61521 - "POST /v1/chat/completions HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61521 - "POST /v1/chat/completions HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61521 - "POST /v1/chat/completions HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61521 - "POST /v1/chat/completions HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61521 - "POST /v1/chat/completions HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61527 - "POST /v1/chat/completions HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61527 - "POST /v1/chat/completions HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61527 - "POST /v1/chat/completions HTTP/1.1" 200 OK
-INFO:     127.0.0.1:61527 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63216 - "GET /health/liveliness HTTP/1.1" 200 OK

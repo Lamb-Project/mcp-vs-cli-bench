@@ -42,6 +42,14 @@ class UsageLogger(CustomLogger):
             messages = kwargs.get("messages") or []
             tools = kwargs.get("tools") or []
             record = {
+                # A per-batch tag cannot be set from the client: this callback
+                # runs inside the proxy, so a client env var is invisible here,
+                # and every Experiment 1 request was tagged with whatever the
+                # proxy happened to start with. A timestamp is reliable across
+                # all four clients and lets the analysis segment the log by run
+                # window, which is what the tag was for.
+                "ts": start_time.isoformat() if hasattr(start_time, "isoformat")
+                      else None,
                 "tag": os.environ.get("E1_RUN_TAG", "untagged"),
                 "model": kwargs.get("model"),
                 "n_messages": len(messages),

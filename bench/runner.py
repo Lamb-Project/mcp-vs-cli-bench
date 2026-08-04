@@ -23,11 +23,14 @@ ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
 MCP_BIN = str(ROOT / "bin" / "github-mcp-server")
 
-OPENAI_MODELS = ["gpt-5.6-sol", "gpt-5.6-luna", "gpt-5.6-terra",
-                 # additional hosted coverage, same billing path
-                 "gpt-5.2", "gpt-5.1", "gpt-5-mini"]
+# sol dropped: 60% of Experiment 1's spend from 12% of its tokens — the worst
+# information per dollar in the set. The 5.x line was substitution coverage while
+# 5.6 looked unreachable and is not needed now.
+OPENAI_MODELS = ["gpt-5.6-luna", "gpt-5.6-terra"]
 LOCAL = ["glm-5.2", "qwen3.5:122b", "qwen3.6:27b"]
-ANTHROPIC = ["sonnet-5", "opus-5", "fable-5"]
+# fable dropped at $10/$50 per million; the three Anthropic models behaved
+# alike in Experiment 1, so one representative carries the per-turn telemetry.
+ANTHROPIC = ["sonnet-5", "opus-5"]
 
 MATRIX: dict[str, list[str]] = {
     "claude-code": ANTHROPIC,                 # cannot reach non-Anthropic endpoints

@@ -19,7 +19,8 @@ from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DATA = ROOT / "results" / "final.jsonl"
+import os
+DATA = pathlib_Path = ROOT / "results" / os.environ.get("BENCH_DATA", "final.jsonl")
 RUNS = ROOT / "results" / "runs"
 
 SHELL_HINT = ("shell", "bash", "run_shell_command", "Bash", "execute")
@@ -113,8 +114,15 @@ def paired(rows: list[dict], strict: bool):
             continue
         if not (c.get("total_input_tokens") and k.get("total_input_tokens")):
             continue
-        if strict and (classify(c) != "pure-cli" or classify(k) != "pure-mcp"):
-            continue
+        if strict:
+            # A ratio is meaningful only when both arms finished the task AND
+            # each used only its assigned surface. Every sub-1.0 ratio observed
+            # so far was one or the other failing: an incomplete run burning
+            # tokens on flailing, or an arm that was not the arm it claimed.
+            if classify(c) != "pure-cli" or classify(k) != "pure-mcp":
+                continue
+            if (c.get("completion_pct") or 0) < 100 or (k.get("completion_pct") or 0) < 100:
+                continue
         out.append((s, m, c, k))
     return out
 

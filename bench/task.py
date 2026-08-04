@@ -91,6 +91,26 @@ RUBRIC: tuple[RubricItem, ...] = (
     ),
 )
 
+ARM_PREAMBLE = {
+    "cli": ("You have the authenticated GitHub CLI (`gh`) and `git` available "
+            "through your shell. Use them for every GitHub operation."),
+    "mcp": ("You have GitHub tools available through an attached MCP server. "
+            "Use them for every GitHub operation."),
+}
+
+
+def prompt_for(arm: str) -> str:
+    """The task, prefixed with what this arm actually has.
+
+    Experiment 1 told neither arm what was available, and qwen-code's CLI arm
+    consequently never touched the CLI — it reached for a generic web-fetch tool
+    in every run, so its "CLI" figures were web-API figures. Naming the surface
+    is not a thumb on the scale; an arm that does not know its tools exist is
+    not the arm we think we are measuring.
+    """
+    return ARM_PREAMBLE.get(arm, "") + "\n\n" + PROMPT
+
+
 PROMPT = f"""Working with the GitHub repository {FIXTURE_REPO}, carry out these \
 five steps in order. Use your available tools to find the real answers — do not \
 guess. Keep each answer to one short line.

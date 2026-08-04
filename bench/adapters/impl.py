@@ -20,7 +20,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from bench.adapters.base import Adapter, RunResult, prompt
+from bench.adapters.base import Adapter, RunResult
+from bench.task_e2 import prompt_for   # Experiment 2 workflow
 
 # Local endpoints. Both are OpenAI-compatible, which is what lets three of the
 # four scaffoldings point at them at all.
@@ -89,7 +90,7 @@ class ClaudeCodeAdapter(Adapter):
     def command(self, model: str, arm: str) -> list[str]:
         # stream-json (not json): the plain json mode returns only the final
         # result, so tool calls would be invisible and reported as zero
-        cmd = ["claude", "-p", prompt(), "--output-format", "stream-json",
+        cmd = ["claude", "-p", prompt_for(arm), "--output-format", "stream-json",
                "--verbose", "--model", self.ALIAS.get(model, model),
                "--permission-mode", "bypassPermissions"]
         if arm == "cli":
@@ -155,11 +156,11 @@ class CodexAdapter(Adapter):
                "-c", 'model_reasoning_effort="low"',
                "-m", mid,
                "--dangerously-bypass-approvals-and-sandbox"]
-        cmd += [prompt()]
+        cmd += [prompt_for(arm)]
         return cmd
 
-    def env(self, model: str) -> dict[str, str]:
-        env = super().env(model)
+    def env(self, model: str, arm: str = "cli") -> dict[str, str]:
+        env = super().env(model, arm)
         _, key = endpoint_for(model)
         env["BENCH_KEY"] = key or "local"
         home = getattr(self, "_home", None)
@@ -233,7 +234,11 @@ class QwenCodeAdapter(Adapter):
     supports_mcp = True
 
     def prepare(self, run_dir: Path, model: str, arm: str) -> None:
-        s: dict = {"tools": {"approvalMode": "yolo"}}
+        # web_fetch is neither surface under test. Left enabled it was the only
+        # path this scaffolding ever took on the CLI arm, so the arm measured
+        # HTTP fetches rather than the command line.
+        s: dict = {"tools": {"approvalMode": "yolo",
+                             "disabled": ["web_fetch"]}}
         if arm == "mcp":
             s["mcpServers"] = {"github": {"command": self.mcp_bin,
                                           "args": ["stdio"], "trust": True}}
@@ -242,13 +247,13 @@ class QwenCodeAdapter(Adapter):
         if arm == "mcp":
             import subprocess
             subprocess.run(["qwen", "mcp", "approve", "github"], cwd=str(run_dir),
-                           env=self.env(model), capture_output=True, text=True)
+                           env=self.env(model, arm), capture_output=True, text=True)
 
     def command(self, model: str, arm: str) -> list[str]:
-        return ["qwen", "--prompt", prompt(), "--output-format", "json"]
+        return ["qwen", "--prompt", prompt_for(arm), "--output-format", "json"]
 
-    def env(self, model: str) -> dict[str, str]:
-        env = super().env(model)
+    def env(self, model: str, arm: str = "cli") -> dict[str, str]:
+        env = super().env(model, arm)
         base, key = endpoint_for(model)
         env["OPENAI_BASE_URL"] = base
         env["OPENAI_API_KEY"] = key or "local"
@@ -280,8 +285,8 @@ class PiAdapter(Adapter):
     def prepare(self, run_dir: Path, model: str, arm: str) -> None:
         pass
 
-    def env(self, model: str) -> dict[str, str]:
-        env = super().env(model)
+    def env(self, model: str, arm: str = "cli") -> dict[str, str]:
+        env = super().env(model, arm)
         # pi prefers an inherited OPENAI_API_KEY over the key configured for its
         # provider. Passing the real key made it authenticate to the proxy with a
         # credential the proxy does not know, which LiteLLM rejects in
@@ -300,7 +305,7 @@ class PiAdapter(Adapter):
         else:
             provider, mid = "openai", model
         return ["pi", "-p", "--mode", "json", "--thinking", "off",
-                "--provider", provider, "--model", mid, prompt()]
+                "--provider", provider, "--model", mid, prompt_for(arm)]
 
     def parse(self, stdout, stderr, res: RunResult) -> RunResult:
         events = [json.loads(l) for l in stdout.splitlines()

@@ -27,10 +27,10 @@ MCP_BIN = str(ROOT / "bin" / "github-mcp-server")
 # information per dollar in the set. The 5.x line was substitution coverage while
 # 5.6 looked unreachable and is not needed now.
 OPENAI_MODELS = ["gpt-5.6-luna", "gpt-5.6-terra"]
-LOCAL = ["glm-5.2", "qwen3.5:122b", "qwen3.6:27b"]
+LOCAL = ["glm-5.2", "qwen3.6:27b"]
 # fable dropped at $10/$50 per million; the three Anthropic models behaved
 # alike in Experiment 1, so one representative carries the per-turn telemetry.
-ANTHROPIC = ["sonnet-5", "opus-5"]
+ANTHROPIC = ["sonnet-5"]
 
 MATRIX: dict[str, list[str]] = {
     "claude-code": ANTHROPIC,                 # cannot reach non-Anthropic endpoints
@@ -125,6 +125,11 @@ def main() -> None:
     for i, (scaffolding, model, arm) in enumerate(cells, 1):
         if model not in LOCAL_MODELS:
             budget_check(args.budget)     # refuse to start a breaching cell
+        # The task writes, so a previous run's branch or PR would satisfy this
+        # run's checks. Reset before every cell.
+        subprocess.run(["python3", "-m", "bench.seed_e2"],
+                       cwd=str(ROOT), capture_output=True,
+                       env={**os.environ, "PYTHONPATH": str(ROOT)})
         if model in LOCAL_MODELS:
             clear_kv_cache()
         adapter = ADAPTERS[scaffolding](workdir, MCP_BIN, token)

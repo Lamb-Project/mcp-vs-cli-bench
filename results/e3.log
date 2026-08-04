@@ -1,0 +1,18 @@
+--- pre-flight spend estimate (prices captured 2026-08-03) ---
+  codex       gpt-5.6-terra  mcp  $ 0.181
+  qwen-code   gpt-5.6-terra  mcp  $ 0.181
+  codex       gpt-5.6-terra  cli  $ 0.035
+  qwen-code   gpt-5.6-terra  cli  $ 0.035
+  pi          gpt-5.6-terra  cli  $ 0.035
+  codex       gpt-5.6-luna   mcp  $ 0.018
+  qwen-code   gpt-5.6-luna   mcp  $ 0.018
+  codex       gpt-5.6-luna   cli  $ 0.003
+  qwen-code   gpt-5.6-luna   cli  $ 0.003
+  pi          gpt-5.6-luna   cli  $ 0.003
+  ESTIMATED TOTAL SPEND: $0.51  (10 metered cells)
+
+running 26 cells -> results/runs-e3.jsonl
+metered spend so far: $0.00 of $2.00
+[1/26] claude-code / sonnet-5 / cli ...
+      -> 80.0%  tools=14 in=543139 cache=97.1% (70s)
+[2/26] codex / gpt-5.6-luna / cli ...

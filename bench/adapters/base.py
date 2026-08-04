@@ -81,9 +81,16 @@ class RunResult:
             self.cache_hit_pct = round(
                 100.0 * self.cached_tokens / max(1, self.total_input_tokens), 1)
         if self.answer is not None:
-            s = score(self.answer)
-            self.rubric = s.items
-            self.completion_pct = s.pct
+            # Score against repository state read back through the API, never
+            # against the agent's claim. Experiment 2 produced runs that reported
+            # success for workflows they had not performed.
+            try:
+                from bench.verify_e2 import verify
+                pct, items = verify(self.answer)
+                self.completion_pct, self.rubric = pct, items
+            except Exception:
+                s = score(self.answer)
+                self.rubric, self.completion_pct = s.items, s.pct
         return self
 
     def to_json(self) -> str:
@@ -110,9 +117,30 @@ class Adapter:
         raise NotImplementedError
 
     # --- shared -----------------------------------------------------------
-    def env(self, model: str) -> dict[str, str]:
+    # Experiment 2 isolation. In Experiment 1 an agent that ignored its assigned
+    # surface still succeeded, so contamination was silent. Now each arm can
+    # reach the fixture by exactly one route and the other route fails visibly.
+    isolate_arms: bool = True
+
+    def env(self, model: str, arm: str = "cli") -> dict[str, str]:
         env = dict(os.environ)
         env["GITHUB_PERSONAL_ACCESS_TOKEN"] = self.gh_token
+        if not self.isolate_arms:
+            return env
+        if arm == "mcp":
+            # The MCP server gets the credential through its own environment.
+            # The agent's shell does not: gh is pointed at an empty config
+            # directory with no token, so reaching for `gh` returns an auth
+            # error instead of quietly completing the task.
+            blank = self.workdir / "_no_gh_auth"
+            blank.mkdir(parents=True, exist_ok=True)
+            env["GH_CONFIG_DIR"] = str(blank)
+            for k in ("GH_TOKEN", "GITHUB_TOKEN"):
+                env.pop(k, None)
+        else:
+            # CLI arm: normal gh auth via the user keychain, and no MCP server
+            # is configured, so the registry tokens are not paid either.
+            env.pop("GITHUB_PERSONAL_ACCESS_TOKEN", None)
         return env
 
     def unsupported(self, model: str) -> str | None:
@@ -146,7 +174,7 @@ class Adapter:
         t0 = time.time()
         try:
             proc = subprocess.run(self.command(model, arm), cwd=str(run_dir),
-                                  env=self.env(model), capture_output=True,
+                                  env=self.env(model, arm), capture_output=True,
                                   text=True, timeout=timeout)
         except subprocess.TimeoutExpired:
             res.error = f"timeout after {timeout}s"
@@ -163,6 +191,15 @@ class Adapter:
             res.error = f"parse failed: {exc}"
             return res.finalise()
         res.assert_mcp()
+        # GLM's thinking mode can run away and emit tokens unrelated to tool use,
+        # which would inflate one arm and corrupt the comparison. The server sets
+        # --reasoning off, but a per-request override could defeat that, so the
+        # run is checked rather than assumed.
+        import re as _re
+        if _re.search(r"reasoning_content|<think>", proc.stdout):
+            res.error = "reasoning output present — thinking was ON; run is void"
+            res.void = True
+            res.void_reason = res.error
         return res.finalise()
 
 

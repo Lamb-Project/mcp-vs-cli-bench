@@ -1,0 +1,18 @@
+schema_version = 1
+# Benchmark provider for mcp-vs-cli-bench: routes every Tau request through the
+# LiteLLM proxy so token usage is recorded the same way as every other
+# scaffolding in the study. openai-completions, not openai-responses, because
+# the proxy serves /v1/chat/completions.
+[[providers]]
+name = "bench"
+display_name = "LiteLLM bench proxy"
+kind = "openai-compatible"
+base_url = "http://localhost:4000/v1"
+api_key_env = "BENCH_KEY"
+credential_name = "bench"
+docs_url = "https://github.com/Lamb-Project/mcp-vs-cli-bench"
+api = "openai-completions"
+models = ["gpt-5.6-luna", "gpt-5.6-terra", "glm-5.2", "qwen3.6:27b"]
+default_model = "gpt-5.6-luna"
+thinking_levels = ["off"]
+thinking_default = "off"

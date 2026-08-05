@@ -1007,3 +1007,187 @@ INFO:     127.0.0.1:52822 - "POST /v1/chat/completions HTTP/1.1" 200 OK
 INFO:     127.0.0.1:52824 - "POST /v1/chat/completions HTTP/1.1" 200 OK
 INFO:     127.0.0.1:52826 - "POST /v1/chat/completions HTTP/1.1" 200 OK
 INFO:     127.0.0.1:52829 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52992 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52992 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52992 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52992 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52992 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52995 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52995 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52995 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52995 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52995 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52996 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52996 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52996 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52996 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52996 - "GET /version HTTP/1.1" 404 Not Found
+[92m11:11:17 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
+Requester IP Address:127.0.0.1
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
+    raise ProxyException(
+litellm.proxy._types.ProxyException: No connected db.
+INFO:     127.0.0.1:52997 - "GET /v1/models HTTP/1.1" 400 Bad Request
+[92m11:11:17 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
+Requester IP Address:127.0.0.1
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
+    raise ProxyException(
+litellm.proxy._types.ProxyException: No connected db.
+INFO:     127.0.0.1:52998 - "GET /models HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:52999 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52999 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52999 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52999 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:52999 - "GET /version HTTP/1.1" 404 Not Found
+[92m11:11:17 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
+Requester IP Address:127.0.0.1
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
+    raise ProxyException(
+litellm.proxy._types.ProxyException: No connected db.
+INFO:     127.0.0.1:53000 - "GET /v1/models/gpt-5.6-luna HTTP/1.1" 400 Bad Request
+[92m11:11:17 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
+Requester IP Address:127.0.0.1
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
+    raise ProxyException(
+litellm.proxy._types.ProxyException: No connected db.
+INFO:     127.0.0.1:53000 - "GET /v1/models HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:53001 - "POST /api/show HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53002 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53002 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53002 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53002 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53002 - "GET /version HTTP/1.1" 404 Not Found
+[92m11:11:17 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
+Requester IP Address:127.0.0.1
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
+    raise ProxyException(
+litellm.proxy._types.ProxyException: No connected db.
+INFO:     127.0.0.1:53003 - "GET /v1/models/gpt-5.6-luna HTTP/1.1" 400 Bad Request
+[92m11:11:17 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
+Requester IP Address:127.0.0.1
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
+    raise ProxyException(
+litellm.proxy._types.ProxyException: No connected db.
+INFO:     127.0.0.1:53003 - "GET /v1/models HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:53004 - "POST /api/show HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53005 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53005 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53005 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53005 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53005 - "GET /version HTTP/1.1" 404 Not Found
+[92m11:11:18 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
+Requester IP Address:127.0.0.1
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
+    raise ProxyException(
+litellm.proxy._types.ProxyException: No connected db.
+INFO:     127.0.0.1:53008 - "POST /v1/chat/completions HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:53010 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53010 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53010 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53010 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53010 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53011 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53011 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53011 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53011 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53011 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53012 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53012 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53012 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53012 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53012 - "GET /version HTTP/1.1" 404 Not Found
+[92m11:11:51 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
+Requester IP Address:127.0.0.1
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
+    raise ProxyException(
+litellm.proxy._types.ProxyException: No connected db.
+INFO:     127.0.0.1:53013 - "GET /v1/models HTTP/1.1" 400 Bad Request
+[92m11:11:51 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
+Requester IP Address:127.0.0.1
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
+    raise ProxyException(
+litellm.proxy._types.ProxyException: No connected db.
+INFO:     127.0.0.1:53014 - "GET /models HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:53015 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53015 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53015 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53015 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53015 - "GET /version HTTP/1.1" 404 Not Found
+[92m11:11:51 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
+Requester IP Address:127.0.0.1
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
+    raise ProxyException(
+litellm.proxy._types.ProxyException: No connected db.
+INFO:     127.0.0.1:53016 - "GET /v1/models/gpt-5.6-luna HTTP/1.1" 400 Bad Request
+[92m11:11:51 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
+Requester IP Address:127.0.0.1
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
+    raise ProxyException(
+litellm.proxy._types.ProxyException: No connected db.
+INFO:     127.0.0.1:53016 - "GET /v1/models HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:53017 - "POST /api/show HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53018 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53018 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53018 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53018 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53018 - "GET /version HTTP/1.1" 404 Not Found
+[92m11:11:51 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
+Requester IP Address:127.0.0.1
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
+    raise ProxyException(
+litellm.proxy._types.ProxyException: No connected db.
+INFO:     127.0.0.1:53019 - "GET /v1/models/gpt-5.6-luna HTTP/1.1" 400 Bad Request
+[92m11:11:51 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
+Requester IP Address:127.0.0.1
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
+    raise ProxyException(
+litellm.proxy._types.ProxyException: No connected db.
+INFO:     127.0.0.1:53019 - "GET /v1/models HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:53020 - "POST /api/show HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53021 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53021 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53021 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53021 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53021 - "GET /version HTTP/1.1" 404 Not Found
+[92m11:11:51 - LiteLLM Proxy:ERROR[0m: auth_exception_handler.py:97 - litellm.proxy.proxy_server.user_api_key_auth(): Exception occured - No connected db.
+Requester IP Address:127.0.0.1
+Traceback (most recent call last):
+  File "/private/tmp/claude-501/-Users-granludo-Documents-ludo-claude-ludo-writting-workshop/6c1c6231-2001-4961-8ec8-0c155193b708/scratchpad/e1-spike/.venv-litellm/lib/python3.12/site-packages/litellm/proxy/auth/user_api_key_auth.py", line 1645, in _user_api_key_auth_builder
+    raise ProxyException(
+litellm.proxy._types.ProxyException: No connected db.
+INFO:     127.0.0.1:53024 - "POST /v1/chat/completions HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:53026 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53026 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53026 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53026 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53026 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53027 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53027 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53027 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53027 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53027 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53028 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53028 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53028 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53028 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53028 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53029 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53030 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53030 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53030 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53030 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53030 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53033 - "POST /v1/chat/completions HTTP/1.1" 200 OK

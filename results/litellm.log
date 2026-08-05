@@ -1409,3 +1409,172 @@ INFO:     127.0.0.1:53536 - "POST /v1/chat/completions HTTP/1.1" 200 OK
 INFO:     127.0.0.1:53544 - "POST /v1/chat/completions HTTP/1.1" 200 OK
 INFO:     127.0.0.1:53529 - "POST /v1/chat/completions HTTP/1.1" 200 OK
 INFO:     127.0.0.1:53552 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53557 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53560 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53549 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53567 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53567 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53567 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53567 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53567 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53568 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53565 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53573 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53577 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53570 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53611 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53611 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53611 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53611 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53611 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53612 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53613 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53613 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53613 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53613 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53613 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53614 - "GET /v1/models/qwen3.6%3A27b HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53614 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53615 - "POST /api/show HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53616 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53616 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53616 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53616 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53616 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53606 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53619 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53629 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53633 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53637 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53643 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53650 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53653 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53661 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53664 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53667 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53669 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53678 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53678 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53678 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53678 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53678 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53679 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53681 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53684 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53687 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53690 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53697 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53699 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53703 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53726 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53731 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53738 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53741 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53743 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53745 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53745 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53745 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53745 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53745 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53746 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53748 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53755 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53757 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53788 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53788 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53788 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53788 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53788 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53789 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53790 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53790 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53790 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53790 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53790 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53793 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53826 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53826 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53826 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53826 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53826 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53827 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53828 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53828 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53828 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53828 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53828 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53831 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53833 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53864 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53864 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53864 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53864 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53864 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53865 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53866 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53866 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53866 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53866 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53866 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53867 - "GET /v1/models/glm-5.2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53867 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53868 - "POST /api/show HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53869 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53869 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53869 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53869 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53869 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53872 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53877 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53880 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53884 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53887 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53891 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53894 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53924 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53924 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53924 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53924 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53924 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53925 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53926 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53926 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53926 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53926 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53926 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53927 - "GET /v1/models/qwen3.6%3A27b HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53927 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53928 - "POST /api/show HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53929 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53929 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53929 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53929 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53929 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53932 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53935 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53937 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53939 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53941 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53943 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53948 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53950 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53952 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53954 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53956 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53958 - "GET /api/v1/models HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53958 - "GET /api/tags HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53958 - "GET /v1/props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53958 - "GET /props HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53958 - "GET /version HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53959 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53961 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53963 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53966 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53968 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53971 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53973 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53978 - "POST /v1/chat/completions HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [16060]

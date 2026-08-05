@@ -34,6 +34,35 @@ def _as_dict(obj):
     return {k: v for k, v in vars(obj).items() if not k.startswith("_")}
 
 
+def _called_tools(response_obj):
+    """Names of tools the model called on this turn, in order.
+
+    Reads the response rather than the request: the request carries the
+    catalogue, the response carries the use. Defensive throughout — a telemetry
+    callback must never break the request path.
+    """
+    out = []
+    try:
+        choices = getattr(response_obj, "choices", None) or []
+        for ch in choices:
+            msg = getattr(ch, "message", None) or (
+                ch.get("message") if isinstance(ch, dict) else None)
+            if msg is None:
+                continue
+            calls = getattr(msg, "tool_calls", None) or (
+                msg.get("tool_calls") if isinstance(msg, dict) else None) or []
+            for c in calls:
+                fn = getattr(c, "function", None) or (
+                    c.get("function") if isinstance(c, dict) else None)
+                nm = getattr(fn, "name", None) or (
+                    fn.get("name") if isinstance(fn, dict) else None)
+                if nm:
+                    out.append(nm)
+    except Exception:
+        return out
+    return out
+
+
 class UsageLogger(CustomLogger):
     def _write(self, kwargs, response_obj, start_time, end_time):
         try:
@@ -61,6 +90,20 @@ class UsageLogger(CustomLogger):
                 "cached_tokens": details.get("cached_tokens"),
                 "latency_s": round((end_time - start_time).total_seconds(), 2)
                 if hasattr(end_time, "__sub__") else None,
+                # The tools the model actually CALLED on this turn, by name.
+                # Recorded here rather than parsed from each scaffolding's
+                # stdout because every arm crosses the proxy, so one
+                # implementation covers all of them and none can report a
+                # fabricated zero. Hermes prints only its final answer in
+                # one-shot mode and emits no tool events at all, which is what
+                # forced this; the register is scaffolding-independent now.
+                "tool_calls": _called_tools(response_obj),
+                # The names OFFERED this turn — catalogue size is the thing the
+                # whole study is about, and len() alone cannot show which tools
+                # a catalogue actually contributes.
+                "tool_names_offered": [
+                    (t.get("function") or {}).get("name")
+                    for t in tools if isinstance(t, dict)][:80],
             }
             pt = record["prompt_tokens"] or 0
             ct = record["cached_tokens"] or 0

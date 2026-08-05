@@ -21,6 +21,7 @@ import datetime
 import json
 import os
 import pathlib
+import subprocess
 from pathlib import Path
 
 from bench.adapters.base import Adapter, RunResult
@@ -56,6 +57,31 @@ def endpoint_for(model: str) -> tuple[str, str]:
 def openrouter_id(model: str) -> str:
     from bench.costs import PRICES
     return PRICES[model][2] if model in PRICES else model
+
+
+def _proxy_rows_since(t0: str, model: str) -> list[dict]:
+    """Proxy usage rows for `model` stamped at or after `t0`.
+
+    Some scaffoldings report no usage of their own, so the LiteLLM log is the
+    only token source. The runner is strictly sequential, so a run owns every
+    row for its model from its start onward and windows cannot interleave.
+    """
+    log = pathlib.Path(os.environ.get(
+        "E1_USAGE_LOG",
+        str(pathlib.Path(__file__).resolve().parents[2] / "results" / "usage.jsonl")))
+    if not log.exists():
+        return []
+    rows = []
+    for line in log.read_text().splitlines():
+        if not line.strip():
+            continue
+        try:
+            d = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if d.get("model") == model and d.get("ts", "") >= t0:
+            rows.append(d)
+    return rows
 
 
 def _walk_tool_calls(obj, register: dict[str, int], names=("tool_use", "function_call")):
@@ -459,3 +485,104 @@ class TauAdapter(Adapter):
 
 
 ADAPTERS["tau"] = TauAdapter
+
+
+HERMES_BIN = str(pathlib.Path.home() / "Code/hermes/.venv-bench/bin/hermes")
+
+
+class HermesAdapter(Adapter):
+    """Hermes — NousResearch's agent, and the fourth MCP-capable scaffolding.
+
+    It matters because the comparison rests on that side of the matrix: before
+    Hermes it held three MCP-capable harnesses against two controls, and one of
+    the three runs a single model.
+
+    It is also the far end of the design axis from pi and Tau. Hermes enables
+    roughly thirteen toolsets by default — web, browser, terminal, file, code
+    execution, vision, image generation, TTS, skills, todo, memory, session
+    search, clarify. That is the shipped default, not a configuration chosen to
+    make it look expensive.
+    """
+
+    name = "hermes"
+    supports_mcp = True
+
+    # CLI arm: the shell and files, nothing else. MCP arm: the catalogue,
+    # without a terminal to fall back on.
+    TOOLSETS = {"cli": "terminal,file", "mcp": "file"}
+
+    def prepare(self, run_dir: Path, model: str, arm: str) -> None:
+        self._t0 = datetime.datetime.now().isoformat()
+        self._usage = run_dir / "hermes-usage.json"
+        # Register or remove the catalogue per arm so the surface is set by
+        # configuration rather than by asking the agent to behave.
+        subprocess.run([HERMES_BIN, "mcp", "remove", "github"],
+                       capture_output=True, text=True, timeout=120)
+        if arm == "mcp":
+            subprocess.run(
+                [HERMES_BIN, "mcp", "add", "github", "--command", self.mcp_bin,
+                 "--env", f"GITHUB_PERSONAL_ACCESS_TOKEN={self.gh_token}",
+                 "--args", "stdio"],
+                capture_output=True, text=True, timeout=300)
+
+    def command(self, model: str, arm: str) -> list[str]:
+        # --provider must accompany -m. Alone, -m resolves the model against
+        # the provider registry, misses (the endpoint is a custom one), and
+        # fails with "No LLM provider configured" — which reads as though no
+        # provider were set up at all, when in fact config.yaml holds a valid
+        # one and the bare invocation works.
+        return [HERMES_BIN, "-z", prompt_for(arm),
+                "--usage-file", str(self._usage),
+                "-t", self.TOOLSETS[arm],
+                "--provider", "custom", "-m", model,
+                "--reasoning", "none"]
+
+    def env(self, model: str, arm: str = "cli") -> dict[str, str]:
+        env = super().env(model, arm)
+        # model.key_env is accepted by `hermes config set` and then resolves to
+        # nothing at request time, surfacing as LiteLLM's "No connected db" —
+        # key rejection wearing a database error's clothes. The key is set
+        # directly via model.api_key; drop inherited keys so nothing competes.
+        env.pop("OPENAI_API_KEY", None)
+        env["BENCH_KEY"] = PROXY_KEY
+        return env
+
+    def parse(self, stdout, stderr, res: RunResult) -> RunResult:
+        reg: dict[str, int] = {}
+        for line in stdout.splitlines():
+            line = line.strip()
+            if line.startswith("{"):
+                try:
+                    _walk_tool_calls(json.loads(line), reg)
+                except json.JSONDecodeError:
+                    pass
+        # Hermes writes its own usage report, which no other scaffolding does.
+        # It is recorded as a cross-check; the proxy stays the source of truth.
+        if self._usage.exists():
+            try:
+                u = json.loads(self._usage.read_text())
+                res.notes.append(f"hermes self-reported usage: {json.dumps(u)[:200]}")
+                for k in ("tool_calls", "tools", "tool_counts"):
+                    if isinstance(u.get(k), dict):
+                        for nm, n in u[k].items():
+                            reg[nm] = reg.get(nm, 0) + int(n)
+            except (json.JSONDecodeError, ValueError, TypeError):
+                pass
+        res.tool_register = reg
+        res.tool_calls = sum(reg.values())
+        res.answer = stdout[-2000:]
+        rows = _proxy_rows_since(self._t0, res.model)
+        if rows:
+            res.total_input_tokens = sum(r.get("prompt_tokens") or 0 for r in rows)
+            res.total_output_tokens = sum(r.get("completion_tokens") or 0 for r in rows)
+            cached = [r.get("cached_tokens") for r in rows
+                      if r.get("cached_tokens") is not None]
+            if cached:
+                res.cached_tokens = sum(cached)
+            res.notes.append(f"tokens from proxy log ({len(rows)} requests)")
+        else:
+            res.notes.append("no proxy rows matched — tokens unattributed")
+        return res
+
+
+ADAPTERS["hermes"] = HermesAdapter

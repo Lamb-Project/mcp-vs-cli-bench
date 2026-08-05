@@ -38,6 +38,7 @@ MATRIX: dict[str, list[str]] = {
     "qwen-code":   OPENAI_MODELS + LOCAL,
     "pi":          OPENAI_MODELS + LOCAL,     # MCP arm is void; CLI arm runs
     "tau":         OPENAI_MODELS + LOCAL,     # likewise no MCP client
+    "hermes":      OPENAI_MODELS + LOCAL,     # MCP-capable: both arms run
 }
 ARMS = ("cli", "mcp")
 

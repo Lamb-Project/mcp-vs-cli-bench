@@ -17,7 +17,10 @@ Verified shapes:
 """
 from __future__ import annotations
 
+import datetime
 import json
+import os
+import pathlib
 from pathlib import Path
 
 from bench.adapters.base import Adapter, RunResult
@@ -347,3 +350,112 @@ class PiAdapter(Adapter):
 
 ADAPTERS = {a.name: a for a in (ClaudeCodeAdapter, CodexAdapter,
                                 QwenCodeAdapter, PiAdapter)}
+
+
+TAU_SRC = str(pathlib.Path.home() / "Code/tau/src")
+TAU_RUN = str(pathlib.Path.home() / "Code/mcp-vs-cli-bench/bin/tau-run")
+
+
+class TauAdapter(Adapter):
+    """Tau — a Python implementation of pi's design philosophy.
+
+    Included because LAMB's agent layer is being refactored onto it, so the
+    benchmark needs to cover it, and because it tests whether the minimal-
+    scaffolding result transfers to a second implementation. It is not an
+    independent confirmation: Tau follows pi's philosophy deliberately, so a
+    matching result shows the principle is portable rather than showing that the
+    catalogue is the sole cause.
+
+    Ships no MCP client, so its catalogue arm is void by capability.
+    """
+
+    name = "tau"
+    supports_mcp = False
+
+    def prepare(self, run_dir: Path, model: str, arm: str) -> None:
+        # Tau reports no usage of its own, so the proxy log is the only token
+        # source. Stamp the start so parse() can claim exactly the rows this
+        # run produced; the runner is sequential, so windows cannot overlap.
+        self._t0 = datetime.datetime.now().isoformat()
+
+    def command(self, model: str, arm: str) -> list[str]:
+        # Two things matter here and both cost us a debugging session.
+        #
+        # 1. tau_coding.cli defines a typer app but has no __main__ guard, so
+        #    `python -m tau_coding.cli` exits silently having done nothing.
+        #    bin/tau-run invokes the app object directly.
+        # 2. The prompt is a VARIADIC positional. Putting it first makes typer
+        #    swallow every following flag into it — the run then launches the
+        #    interactive TUI with a prompt reading "<task> --print --mode json
+        #    …" and blocks forever. Flags first, `--`, prompt last.
+        #
+        # The provider is registered in ~/.tau/catalog.toml (see setup/), which
+        # points at the LiteLLM proxy, so --base-url is neither needed nor
+        # accepted here: on this path it configures `tau setup`, not the run.
+        return [TAU_RUN, "--print", "--mode", "json",
+                "--provider", "bench", "--model", model,
+                "--cwd", ".", "--", prompt_for(arm)]
+
+    def env(self, model: str, arm: str = "cli") -> dict[str, str]:
+        env = super().env(model, arm)
+        env["PYTHONPATH"] = TAU_SRC
+        env["BENCH_KEY"] = PROXY_KEY
+        env["OPENAI_API_KEY"] = PROXY_KEY
+        env["OPENAI_BASE_URL"] = PROXY_BASE
+        return env
+
+    def parse(self, stdout, stderr, res: RunResult) -> RunResult:
+        events = []
+        for line in stdout.splitlines():
+            line = line.strip()
+            if line.startswith("{"):
+                try:
+                    events.append(json.loads(line))
+                except json.JSONDecodeError:
+                    pass
+        # Tau speaks its own event dialect: {"type": "tool_execution_start",
+        # "toolName": "bash", ...}. The shared walker keys off type ==
+        # "tool_use"/"function_call" with a "name" field, so it silently
+        # records zero calls here — a wrong number, not a missing one.
+        reg: dict[str, int] = {}
+        for e in events:
+            if e.get("type") == "tool_execution_start" and e.get("toolName"):
+                nm = e["toolName"]
+                reg[nm] = reg.get(nm, 0) + 1
+        res.tool_register = reg
+        res.tool_calls = sum(reg.values())
+        texts = [e.get("text") or e.get("content") for e in events
+                 if isinstance(e.get("text") or e.get("content"), str)]
+        res.answer = texts[-1] if texts else stdout[-2000:]
+        # Tau emits no usage record, so the proxy log is the sole token source.
+        # Claim the rows for this model stamped at or after the run started.
+        log = pathlib.Path(os.environ.get(
+            "E1_USAGE_LOG", str(pathlib.Path(__file__).resolve().parents[2]
+                                / "results" / "usage.jsonl")))
+        rows = []
+        if log.exists():
+            for line in log.read_text().splitlines():
+                if not line.strip():
+                    continue
+                try:
+                    d = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if d.get("model") == res.model and d.get("ts", "") >= self._t0:
+                    rows.append(d)
+        if rows:
+            res.total_input_tokens = sum(r.get("prompt_tokens") or 0 for r in rows)
+            res.total_output_tokens = sum(r.get("completion_tokens") or 0 for r in rows)
+            # Absent is not zero: only claim a cache figure if the provider
+            # actually reported one, otherwise the hit rate reads as a real 0%.
+            cached = [r.get("cached_tokens") for r in rows
+                      if r.get("cached_tokens") is not None]
+            if cached:
+                res.cached_tokens = sum(cached)
+            res.notes.append(f"tokens from proxy log ({len(rows)} requests)")
+        else:
+            res.notes.append("no proxy rows matched — tokens unattributed")
+        return res
+
+
+ADAPTERS["tau"] = TauAdapter

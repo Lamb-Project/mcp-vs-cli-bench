@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# tau_coding.cli defines a typer app but has no __main__ guard, so `python -m`
+# exits silently doing nothing. Invoke the app object directly.
+exec "$HOME/Code/mcp-vs-cli-bench/.venv-tau/bin/python" -c '
+import sys
+from tau_coding.cli import app
+sys.argv[0] = "tau"
+app()
+' "$@"

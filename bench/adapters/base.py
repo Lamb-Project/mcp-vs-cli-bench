@@ -191,15 +191,28 @@ class Adapter:
             res.error = f"parse failed: {exc}"
             return res.finalise()
         res.assert_mcp()
-        # GLM's thinking mode can run away and emit tokens unrelated to tool use,
-        # which would inflate one arm and corrupt the comparison. The server sets
-        # --reasoning off, but a per-request override could defeat that, so the
-        # run is checked rather than assumed.
+        # GLM specifically spirals when thinking is on, emitting tokens unrelated
+        # to tool use and inflating whichever arm it lands in. The server sets
+        # --reasoning off, but a per-request override could defeat that, so GLM
+        # runs are checked rather than assumed.
+        #
+        # Scoped to GLM deliberately. Other models reason legitimately, and this
+        # guard reads what the SCAFFOLDING PRINTS, not what the model generated —
+        # a harness that reasons but does not surface it looks clean while one
+        # that echoes its reasoning looks contaminated. Applied broadly it voided
+        # completed runs on the two minimal harnesses and left the verbose ones
+        # standing, which is exactly backwards.
         import re as _re
-        if _re.search(r"reasoning_content|<think>", proc.stdout):
+        if model.startswith("glm") and _re.search(r"reasoning_content|<think>",
+                                                  proc.stdout):
             res.error = "reasoning output present — thinking was ON; run is void"
             res.void = True
             res.void_reason = res.error
+        elif _re.search(r"reasoning_content|<think>", proc.stdout):
+            # Recorded, not voided: the tokens are real and the task was really
+            # done, but the total includes reasoning and is not directly
+            # comparable to a harness that does not print its thinking.
+            res.notes.append("reasoning output present — totals include thinking tokens")
         return res.finalise()
 
 

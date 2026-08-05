@@ -45,8 +45,15 @@ def _called_tools(response_obj):
     try:
         choices = getattr(response_obj, "choices", None) or []
         for ch in choices:
-            msg = getattr(ch, "message", None) or (
-                ch.get("message") if isinstance(ch, dict) else None)
+            # Streamed responses carry the assembled call on `delta` rather
+            # than `message`. Hosted models stream and local ones did not, so
+            # checking only `message` recorded full registers for local cells
+            # and zero for hosted ones — a gap that looked like models simply
+            # not calling tools, on runs that had completed a write workflow.
+            msg = (getattr(ch, "message", None)
+                   or (ch.get("message") if isinstance(ch, dict) else None)
+                   or getattr(ch, "delta", None)
+                   or (ch.get("delta") if isinstance(ch, dict) else None))
             if msg is None:
                 continue
             calls = getattr(msg, "tool_calls", None) or (

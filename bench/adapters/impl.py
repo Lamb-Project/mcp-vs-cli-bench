@@ -509,21 +509,45 @@ class HermesAdapter(Adapter):
 
     # CLI arm: the shell and files, nothing else. MCP arm: the catalogue,
     # without a terminal to fall back on.
-    TOOLSETS = {"cli": "terminal,file", "mcp": "file"}
+    # -t gates MCP tools as well as built-ins, so naming only built-in
+    # toolsets on the MCP arm excluded the catalogue that had just been
+    # attached and verified. The server was enabled and absent from the
+    # request at the same time; `hermes mcp list` confirms attachment, not
+    # exposure. The arm must name the server itself.
+    TOOLSETS = {"cli": "terminal,file", "mcp": "file,github"}
 
     def prepare(self, run_dir: Path, model: str, arm: str) -> None:
         self._t0 = datetime.datetime.now().isoformat()
         self._usage = run_dir / "hermes-usage.json"
         # Register or remove the catalogue per arm so the surface is set by
         # configuration rather than by asking the agent to behave.
+        # `hermes mcp add` is interactive on BOTH paths: it prompts "Save config
+        # anyway?" when the connection fails and "Enable all N tools?" when it
+        # succeeds. With no stdin it takes the default and, on the failure path,
+        # saves nothing — while still exiting 0. The first Hermes matrix ran
+        # four "MCP" cells with no server attached and no error anywhere,
+        # because a setup step that fails loudly to a human failed silently to
+        # a script. Feed it "y" and then VERIFY, rather than trusting an exit
+        # code that does not distinguish the two outcomes.
         subprocess.run([HERMES_BIN, "mcp", "remove", "github"],
-                       capture_output=True, text=True, timeout=120)
+                       input="y\n", capture_output=True, text=True, timeout=120)
         if arm == "mcp":
             subprocess.run(
                 [HERMES_BIN, "mcp", "add", "github", "--command", self.mcp_bin,
                  "--env", f"GITHUB_PERSONAL_ACCESS_TOKEN={self.gh_token}",
                  "--args", "stdio"],
-                capture_output=True, text=True, timeout=300)
+                input="y\n" * 4, capture_output=True, text=True, timeout=600)
+        listing = subprocess.run([HERMES_BIN, "mcp", "list"], capture_output=True,
+                                 text=True, timeout=120).stdout
+        attached = "github" in listing and "enabled" in listing
+        if arm == "mcp" and not attached:
+            raise RuntimeError(
+                "github MCP server not attached — refusing to run an MCP arm "
+                "with no catalogue (this silently produced four invalid cells)")
+        if arm == "cli" and attached:
+            raise RuntimeError(
+                "github MCP server still attached on the CLI arm — the arms "
+                "would not be isolated")
 
     def command(self, model: str, arm: str) -> list[str]:
         # --provider must accompany -m. Alone, -m resolves the model against

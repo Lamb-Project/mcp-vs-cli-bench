@@ -21,6 +21,8 @@ INK, MUTED, SURF, GRID = "#111111", "#575757", "#ffffff", "#dcdcdc"
 plt.rcParams.update({"font.size": 9, "axes.titlesize": 10})
 
 ORDER = ["pi", "tau", "hermes", "codex", "qwen-code", "claude-code"]
+DISPLAY = {"tau": "Tau", "hermes": "Hermes", "codex": "Codex",
+           "qwen-code": "qwen-code", "claude-code": "Claude Code", "pi": "pi"}
 MINIMAL = {"pi", "tau"}
 
 
@@ -64,7 +66,7 @@ def fig1_scaffolding(rows):
     for i, (bb, v) in enumerate(zip(b, med)):
         a1.text(v*1.06, i, f"{v:,.0f}", va="center", fontsize=8.5, color=INK)
     a1.set_xscale("log"); a1.set_yticks(range(len(names)))
-    a1.set_yticklabels(names, color=INK); a1.invert_yaxis()
+    a1.set_yticklabels([DISPLAY.get(n, n) for n in names], color=INK); a1.invert_yaxis()
     a1.set_xlim(right=max(med)*3)
     _style(a1, "Median tokens per run  (log scale)", xlabel="input tokens")
     a1.grid(axis="y", visible=False); a1.grid(axis="x", color=GRID, lw=.7)
@@ -72,13 +74,14 @@ def fig1_scaffolding(rows):
     b2 = a2.barh(range(len(names)), comp, color=cols, height=.62, lw=0)
     for i, v in enumerate(comp):
         a2.text(v+2, i, f"{v:.0f}%", va="center", fontsize=8.5, color=INK)
-    a2.set_yticks(range(len(names))); a2.set_yticklabels(names, color=INK)
+    a2.set_yticks(range(len(names)))
+    a2.set_yticklabels([DISPLAY.get(n, n) for n in names], color=INK)
     a2.invert_yaxis(); a2.set_xlim(0, 118)
-    _style(a2, "Runs completing the whole task", xlabel="% of runs")
+    _style(a2, "Runs completing the whole task  (main matrix)", xlabel="% of runs")
     a2.grid(axis="y", visible=False); a2.grid(axis="x", color=GRID, lw=.7)
 
     h = [plt.Rectangle((0,0),1,1,color=MIN), plt.Rectangle((0,0),1,1,color=MCP)]
-    lg = fig.legend(h, ["no MCP client (minimal)", "MCP-capable"], frameon=False,
+    lg = fig.legend(h, ["no MCP support", "can use MCP"], frameon=False,
                     ncol=2, loc="lower center", bbox_to_anchor=(.5,-.06), fontsize=8.5)
     for t in lg.get_texts(): t.set_color(MUTED)
     fig.tight_layout(); save(fig, "v5-scaffolding")
@@ -104,8 +107,8 @@ def fig2_arms(rows):
 
     fig, ax = plt.subplots(figsize=(7.8, 3.5), dpi=200)
     y = range(len(names)); h = .34
-    ax.barh([i+h/2 for i in y], cli, height=h, color=CLI, lw=0, label="shell only")
-    ax.barh([i-h/2 for i in y], mcp, height=h, color=MCP, lw=0, label="catalogue attached")
+    ax.barh([i+h/2 for i in y], cli, height=h, color=CLI, lw=0, label="command line")
+    ax.barh([i-h/2 for i in y], mcp, height=h, color=MCP, lw=0, label="MCP")
     top = max(max(cli), max(mcp))
     for i, s in enumerate(names):
         c, m = cli[i], mcp[i]
@@ -118,11 +121,12 @@ def fig2_arms(rows):
         ax.text(top*3.6, i, f"×{m/c:.2f}", va="center", ha="right", fontsize=9.5,
                 color=INK if both else MUTED,
                 fontweight="bold" if both else "normal")
-    ax.text(top*3.6, -0.8, "catalogue ÷ shell", va="center", ha="right",
+    ax.text(top*3.6, -0.8, "MCP ÷ command line", va="center", ha="right",
             fontsize=8, color=MUTED)
-    ax.set_xscale("log"); ax.set_yticks(list(y)); ax.set_yticklabels(names, color=INK)
+    ax.set_xscale("log"); ax.set_yticks(list(y))
+    ax.set_yticklabels([DISPLAY.get(n, n) for n in names], color=INK)
     ax.invert_yaxis(); ax.set_xlim(right=top*4.2)
-    _style(ax, "Cost of attaching a tool catalogue, within each harness",
+    _style(ax, "Cost of attaching MCP, within each agent scaffolding",
            xlabel="median input tokens (log scale)")
     ax.grid(axis="y", visible=False); ax.grid(axis="x", color=GRID, lw=.7)
     lg = fig.legend(frameon=False, fontsize=8.5, ncol=2, loc="lower center",
@@ -139,7 +143,8 @@ def fig3_catalogue(rows):
     ship all 44 on every turn. Same server, same task, different bill.
     """
     KNOWN_INLINE = {"codex": 44, "qwen-code": 44, "claude-code": 44}
-    groups = {"on demand\n(7 schemas/request)": [], "shipped inline\n(44 schemas/request)": []}
+    groups = {"MCP, fetched on demand\n(7 schemas per request)": [],
+              "MCP, sent in full\n(44 schemas per request)": []}
     for r in live(rows):
         if r["arm"] != "mcp":
             continue
@@ -166,14 +171,14 @@ def fig3_catalogue(rows):
         for _, v in groups[k]:
             ax.scatter(i + 0.34, v, s=40, color="white", edgecolor=colour,
                        lw=1.6, zorder=4)
-        harnesses = sorted({n for n, _ in groups[k]})
+        harnesses = sorted({DISPLAY.get(n, n) for n, _ in groups[k]})
         tick_extra[k] = f"\n{', '.join(harnesses)}  ({len(vals)} runs)"
     ax.set_yscale("log")
     ax.set_xticks(range(len(labels)))
     ax.set_xticklabels([k + tick_extra.get(k, "") for k in labels], color=INK,
                        fontsize=8.5)
     ax.set_xlim(-.55, len(labels) - .1)
-    _style(ax, "Same MCP server, two delivery modes — catalogue arms only",
+    _style(ax, "Same MCP server, two delivery modes — MCP arms only",
            ylabel="input tokens (log scale)")
     ax.grid(axis="y", color=GRID, lw=.7)
     fig.tight_layout(); save(fig, "v5-catalogue")

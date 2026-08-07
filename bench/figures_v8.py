@@ -48,8 +48,14 @@ def _style(ax, title, ylabel="", xlabel=""):
     ax.tick_params(colors=MUTED, length=0)
 
 
+# Draft 8's figures must keep matching draft 8's tables, so a new dataset writes
+# under a new prefix instead of overwriting them.
+PREFIX = os.environ.get("FIG_PREFIX", "v8")
+
+
 def save(fig, name):
     FIG.mkdir(parents=True, exist_ok=True)
+    name = name.replace("v8-", f"{PREFIX}-", 1)
     for ext in ("pdf", "png"):
         fig.savefig(FIG / f"{name}.{ext}", facecolor=SURF, bbox_inches="tight", dpi=200)
     plt.close(fig); print("  ", name)

@@ -39,12 +39,27 @@ def load(name):
     return [json.loads(l) for l in p.read_text().splitlines() if l.strip()] if p.exists() else []
 
 
+INVALID_MCP_AUTH = "MCP server received an unexpanded literal as its credential " \
+                   "and answered 401 to every call; the cell measured the " \
+                   "harness configuration, not the protocol"
+
+
 def norm(r):
     rub = r.get("rubric") or {}
     valid = {k: v for k, v in rub.items() if k != "pr_links_issue"}
     if valid:
         r["completion_pct"] = round(
             100.0 * sum(bool(v) for v in valid.values()) / len(valid), 1)
+    # The draft-8 Claude Code MCP cell ran against a server that could not
+    # authenticate. It is voided rather than dropped: void rows stay visible in
+    # the tables and stay out of the statistics, which is the distinction the
+    # harness already draws between "cannot" and "costs nothing". Counting it as
+    # an MCP failure put $0.75 of $2.73 of MCP-arm spend into the wasted-cost
+    # share and inflated it from 20.7% to 42.4%.
+    if (r.get("scaffolding") == "claude-code" and r.get("arm") == "mcp"
+            and r.get("model") == "sonnet-5"):
+        r["void"] = True
+        r["void_reason"] = INVALID_MCP_AUTH
     return r
 
 

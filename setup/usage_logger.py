@@ -65,6 +65,21 @@ def _called_tools(response_obj):
                     fn.get("name") if isinstance(fn, dict) else None)
                 if nm:
                     out.append(nm)
+        # A request sent in Anthropic format comes back as ResponsesAPIResponse,
+        # which has no `choices` at all: the calls sit in a flat `output` list of
+        # items carrying `name` and `call_id`. Reading only `choices` returned an
+        # empty register for every such request while the client could plainly
+        # see the tool_use block -- and an empty register is indistinguishable
+        # from an agent that ignored its catalogue, which is exactly the
+        # behaviour Section 7 reports. The count and the token figures were
+        # correct throughout, so nothing else looked wrong.
+        if not out:
+            for item in (getattr(response_obj, "output", None) or []):
+                d = item if isinstance(item, dict) else _as_dict(item)
+                nm, kind = d.get("name"), (d.get("type") or "")
+                if nm and (kind == "tool_use" or kind.endswith("call")
+                           or d.get("call_id")):
+                    out.append(nm)
     except Exception:
         return out
     return out
@@ -108,8 +123,16 @@ class UsageLogger(CustomLogger):
                 # The names OFFERED this turn — catalogue size is the thing the
                 # whole study is about, and len() alone cannot show which tools
                 # a catalogue actually contributes.
+                #
+                # Two dialects reach this callback. Scaffoldings speaking OpenAI
+                # nest the name under "function"; Claude Code speaks Anthropic,
+                # whose tools are flat ({"name", "description", "input_schema"}).
+                # Reading only the nested form recorded a list of nulls for every
+                # Claude Code request — the count was right, so nothing looked
+                # broken, and Section 7's adherence analysis would have been
+                # computed over missing names.
                 "tool_names_offered": [
-                    (t.get("function") or {}).get("name")
+                    ((t.get("function") or {}).get("name") or t.get("name"))
                     for t in tools if isinstance(t, dict)][:80],
             }
             pt = record["prompt_tokens"] or 0

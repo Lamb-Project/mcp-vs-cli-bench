@@ -19,6 +19,8 @@ from __future__ import annotations
 import json
 import pathlib
 
+from bench.costs import PRICES, theoretical_cost
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 R = ROOT / "results"
 
@@ -60,6 +62,26 @@ def norm(r):
             and r.get("model") == "sonnet-5"):
         r["void"] = True
         r["void_reason"] = INVALID_MCP_AUTH
+    # Price here rather than afterwards. e3-final carries costs that
+    # consolidate_v5 never wrote, so they were added by a step outside the
+    # pipeline and the dataset could not be rebuilt from its sources in one
+    # command. Same formula and table as bench/runner.py.
+    if (r.get("theoretical_cost_usd") is None and r.get("total_input_tokens")
+            and r.get("model") in PRICES):
+        r["theoretical_cost_usd"] = theoretical_cost(
+            r["model"], r.get("total_input_tokens") or 0,
+            r.get("total_output_tokens") or 0,
+            r.get("cached_tokens") or 0).total_usd
+    # Table 4's second cost column, priced with cached reads at a tenth. The
+    # 0.9 rate is not a guess: it is the value that reproduces the stored
+    # figures in e3-final exactly (1.115388 -> 0.165660 on the Claude Code
+    # command-line cell).
+    if (r.get("cost_usd_cached_discounted") is None
+            and r.get("total_input_tokens") and r.get("model") in PRICES):
+        r["cost_usd_cached_discounted"] = theoretical_cost(
+            r["model"], r.get("total_input_tokens") or 0,
+            r.get("total_output_tokens") or 0,
+            r.get("cached_tokens") or 0, cache_discount=0.9).total_usd
     return r
 
 

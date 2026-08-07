@@ -84,14 +84,15 @@ def main():
             # The subscription cells are the exception now, not the scaffolding:
             # a subscription's OAuth token authenticates only against Anthropic,
             # so those two cells alone stay self-reported.
-            ax.add_patch(FancyArrowPatch((x + w/2 + 0.04, 0.545), (0.8625, 0.267),
+            ax.add_patch(FancyArrowPatch((x + w/2 + 0.055, 0.545), (0.90, 0.267),
                                          arrowstyle="-|>", mutation_scale=11,
                                          color=MUTED, lw=1.0, linestyle=(0, (3, 2)),
                                          zorder=2))
-            # Left of the grey dashed path and clear of the green completion
-            # line at x=0.94, which the previous placement ran straight through.
-            ax.text(0.878, 0.325, "subscription\ncells (2):\nself-reported",
-                    fontsize=6.5, color=MUTED, va="center", ha="right")
+            # Sits in the clear band between the proxy's lower edge (0.345) and
+            # the model boxes (0.267), right of the proxy and left of both the
+            # dashed path and the green completion line at x=0.94.
+            ax.text(0.806, 0.306, "subscription\ncells (2)\nself-reported",
+                    fontsize=6.2, color=MUTED, va="center", ha="left")
         else:
             arrow(ax, (x + w/2, 0.545), (x + w/2, 0.435), color=c, lw=1.1)
     arrow(ax, (0.50, 0.735), (0.50, 0.625), color=INK, lw=1.5)

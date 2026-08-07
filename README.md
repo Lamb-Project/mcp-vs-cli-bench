@@ -114,9 +114,32 @@ figures and tables remain reproducible from the published data.
 
 ## Status
 
-Pre-release. The matrix has been costed and the harness verified against every
-scaffolding's telemetry format; results are being collected.
+Results collected. The main matrix is 46 cells across six agent scaffoldings and
+five models, with the locally-served configurations repeated three times so that
+run-to-run variation is measured rather than assumed. `bench/verify_paper.py`
+recomputes every number in the accompanying manuscript from the dataset.
+
+## Authors
+
+- Marc Alier — Universitat Politècnica de Catalunya (UPC), Barcelona
+- Juanan Pereira — Universidad del País Vasco / Euskal Herriko Unibertsitatea (UPV/EHU), Donostia-San Sebastián
+- María José Casañ — Universitat Politècnica de Catalunya (UPC), Barcelona
+- Francisco José García-Peñalvo — Universidad de Salamanca (USAL), Salamanca
+
+Correspondence: `marc.alier@upc.edu`
 
 ## Licence
 
-MIT.
+Copyright © 2026 Marc Alier, Juanan Pereira, María José Casañ and
+Francisco José García-Peñalvo.
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the **GNU General Public License** as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version. It is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the [LICENSE](LICENSE) file, or
+<https://www.gnu.org/licenses/>, for the full terms.
+
+Same licence and the same authorship as the [LAMB
+project](https://github.com/Lamb-Project), of which this benchmark is a part.

@@ -9,17 +9,21 @@ over complete runs only, completion is reported separately as its own quantity,
 and pooled figures appear only as a robustness check.
 """
 from __future__ import annotations
-import json, pathlib, statistics as st
+import json, os, pathlib, statistics as st
 from collections import defaultdict
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+# Draft 8 reports e3-final; draft 9 adds the Claude Code row in e4-final. Both
+# stay reproducible from one script rather than two, because a forked analysis
+# is how a figure and a table start disagreeing about the same quantity.
+DATASET = os.environ.get("BENCH_DATASET", "e3-final.jsonl")
 MINIMAL = {"pi", "tau"}
 DISP = {"pi": "pi", "tau": "Tau", "hermes": "Hermes", "codex": "Codex",
         "qwen-code": "qwen-code", "claude-code": "Claude Code"}
 
 
 def load():
-    rs = [json.loads(l) for l in (ROOT / "results/e3-final.jsonl").read_text().splitlines() if l.strip()]
+    rs = [json.loads(l) for l in (ROOT / "results" / DATASET).read_text().splitlines() if l.strip()]
     live = [r for r in rs if not r.get("void") and r.get("total_input_tokens")]
     done = [r for r in live if (r.get("completion_pct") or 0) == 100]
     return rs, live, done

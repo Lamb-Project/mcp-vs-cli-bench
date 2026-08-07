@@ -106,21 +106,49 @@ class ClaudeCodeAdapter(Adapter):
     name = "claude-code"
     supports_mcp = True
 
+    # Models Claude Code reaches on its own subscription credentials. Everything
+    # else is routed through the proxy exactly like the other scaffoldings.
+    #
+    # The scaffolding was previously assumed to be pinned to Anthropic, and both
+    # this harness and the manuscript said so. It is not: ANTHROPIC_BASE_URL
+    # redirects it at any endpoint speaking the Anthropic message format, which
+    # LiteLLM serves at /v1/messages. What is genuinely pinned is a SUBSCRIPTION
+    # account, whose OAuth token only authenticates against Anthropic — a
+    # property of the credential we chose, not of the scaffolding.
+    NATIVE = {"sonnet-5", "opus-5", "fable-5"}
+
+    # the matrix names models uniformly (sonnet-5); claude takes bare aliases
+    ALIAS = {"sonnet-5": "sonnet", "opus-5": "opus", "fable-5": "fable"}
+
     def prepare(self, run_dir: Path, model: str, arm: str) -> None:
+        self._t0 = datetime.datetime.now().isoformat()
         if arm == "mcp":
             cfg = {"mcpServers": {"github": {
                 "command": self.mcp_bin, "args": ["stdio"],
                 "env": {"GITHUB_PERSONAL_ACCESS_TOKEN": "$GITHUB_PERSONAL_ACCESS_TOKEN"}}}}
             (run_dir / ".mcp.json").write_text(json.dumps(cfg, indent=1))
 
-    # the matrix names models uniformly (sonnet-5); claude takes bare aliases
-    ALIAS = {"sonnet-5": "sonnet", "opus-5": "opus", "fable-5": "fable"}
+    def env(self, model: str, arm: str = "cli") -> dict[str, str]:
+        env = super().env(model, arm)
+        if model in self.NATIVE:
+            return env
+        base, key = endpoint_for(model)
+        # Claude Code appends /v1/messages itself, so it needs the proxy ROOT,
+        # not the /v1 path handed to the OpenAI-speaking scaffoldings.
+        env["ANTHROPIC_BASE_URL"] = base[:-3] if base.endswith("/v1") else base
+        env["ANTHROPIC_AUTH_TOKEN"] = key
+        env["ANTHROPIC_MODEL"] = model
+        # An inherited key outranks the proxy token and would send the run to
+        # Anthropic at full price under a local model's name.
+        env.pop("ANTHROPIC_API_KEY", None)
+        return env
 
     def command(self, model: str, arm: str) -> list[str]:
         # stream-json (not json): the plain json mode returns only the final
         # result, so tool calls would be invisible and reported as zero
+        name = self.ALIAS.get(model, model) if model in self.NATIVE else model
         cmd = ["claude", "-p", prompt_for(arm), "--output-format", "stream-json",
-               "--verbose", "--model", self.ALIAS.get(model, model),
+               "--verbose", "--model", name,
                "--permission-mode", "bypassPermissions"]
         if arm == "cli":
             cmd += ["--strict-mcp-config"]      # no MCP servers at all
@@ -132,22 +160,57 @@ class ClaudeCodeAdapter(Adapter):
         doc = next((e for e in reversed(events) if e.get("type") == "result"),
                    events[-1] if events else {})
         u = doc.get("usage") or {}
-        res.total_input_tokens = (u.get("input_tokens") or 0) + \
-            (u.get("cache_read_input_tokens") or 0) + (u.get("cache_creation_input_tokens") or 0)
-        res.total_output_tokens = u.get("output_tokens")
-        res.cached_tokens = u.get("cache_read_input_tokens")
-        iters = u.get("iterations") or []
-        if iters:
-            first = iters[0]
-            res.initial_tokens = (first.get("input_tokens") or 0) + \
-                (first.get("cache_read_input_tokens") or 0) + \
-                (first.get("cache_creation_input_tokens") or 0)
         res.answer = doc.get("result")
-        res.notes.append(f"claude-reported billed cost ${doc.get('total_cost_usd')}")
         reg: dict[str, int] = {}
         _walk_tool_calls(events, reg)
         res.tool_register = reg
         res.tool_calls = sum(reg.values())
+
+        if res.model in self.NATIVE:
+            # Subscription route: no proxy in the path, so the scaffolding's own
+            # record is the only source. Anthropic's convention counts cache
+            # reads separately from input_tokens, so the total is their sum.
+            res.total_input_tokens = (u.get("input_tokens") or 0) + \
+                (u.get("cache_read_input_tokens") or 0) + \
+                (u.get("cache_creation_input_tokens") or 0)
+            res.total_output_tokens = u.get("output_tokens")
+            res.cached_tokens = u.get("cache_read_input_tokens")
+            iters = u.get("iterations") or []
+            if iters:
+                first = iters[0]
+                res.initial_tokens = (first.get("input_tokens") or 0) + \
+                    (first.get("cache_read_input_tokens") or 0) + \
+                    (first.get("cache_creation_input_tokens") or 0)
+            res.notes.append("tokens self-reported (subscription; no proxy in path)")
+            res.notes.append(f"claude-reported billed cost ${doc.get('total_cost_usd')}")
+            return res
+
+        # Proxied route: the proxy log is the source of truth, as for every other
+        # scaffolding. The top-level `usage` block reports all zeros when the
+        # backend is not Anthropic — the scaffolding's own figures survive only
+        # under `modelUsage`, which is recorded below as a cross-check.
+        rows = _proxy_rows_since(self._t0, res.model)
+        if rows:
+            res.total_input_tokens = sum(r.get("prompt_tokens") or 0 for r in rows)
+            res.total_output_tokens = sum(r.get("completion_tokens") or 0 for r in rows)
+            cached = [r.get("cached_tokens") for r in rows
+                      if r.get("cached_tokens") is not None]
+            if cached:
+                res.cached_tokens = sum(cached)
+            res.initial_tokens = rows[0].get("prompt_tokens")
+            res.notes.append(f"tokens from proxy log ({len(rows)} requests)")
+        else:
+            res.notes.append("no proxy rows matched — tokens unattributed")
+        mu = (doc.get("modelUsage") or {}).get(res.model) or {}
+        if mu:
+            self_total = ((mu.get("inputTokens") or 0)
+                          + (mu.get("cacheReadInputTokens") or 0)
+                          + (mu.get("cacheCreationInputTokens") or 0))
+            res.notes.append(
+                f"scaffolding self-report cross-check: input={self_total} "
+                f"output={mu.get('outputTokens')} "
+                f"(proxy: input={res.total_input_tokens} "
+                f"output={res.total_output_tokens})")
         return res
 
 

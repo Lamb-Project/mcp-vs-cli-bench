@@ -7,7 +7,7 @@ same page. Everything here is computed over completed runs, with completion
 shown separately over attempts — the same split the tables use.
 """
 from __future__ import annotations
-import json, pathlib, statistics as st
+import json, os, pathlib, statistics as st
 from collections import defaultdict
 
 import matplotlib
@@ -15,6 +15,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
+# Same dataset switch the tables use — figures and tables must be conditioned on
+# the same rows or they diverge, which is how draft 7 shipped a figure that
+# contradicted the table printed beside it.
+DATASET = os.environ.get("BENCH_DATASET", "e3-final.jsonl")
 FIG = (pathlib.Path.home() / "Documents/ludo-claude/ludo-writting-workshop"
        "/writting-projects/papers/2026/mcp-vs-cli-benchmark/figures")
 CLI, MCP, MIN = "#2a6fdb", "#e2622a", "#1f9d63"
@@ -27,7 +31,7 @@ DISP = {"pi": "pi", "tau": "Tau", "hermes": "Hermes", "codex": "Codex",
 
 
 def load():
-    rows = [json.loads(l) for l in (ROOT / "results/e3-final.jsonl").read_text().splitlines() if l.strip()]
+    rows = [json.loads(l) for l in (ROOT / "results" / DATASET).read_text().splitlines() if l.strip()]
     live = [r for r in rows if not r.get("void") and r.get("total_input_tokens")]
     done = [r for r in live if (r.get("completion_pct") or 0) == 100]
     return live, done

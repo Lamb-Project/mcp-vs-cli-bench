@@ -7,18 +7,24 @@ other and disagree with reality. Everything here is recomputed from
 e3-final.jsonl and compared against the values written into the manuscript.
 """
 from __future__ import annotations
-import json, pathlib, re, statistics as st
+import json, os, pathlib, re, statistics as st
 from collections import defaultdict
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-PAPER = (pathlib.Path.home() / "Documents/ludo-claude/ludo-writting-workshop"
-         "/writting-projects/papers/2026/mcp-vs-cli-benchmark/paper-draft-v8.md")
+# Both drafts stay checkable: v8 against e3-final by default, v9 against
+# e4-final by setting BENCH_PAPER and BENCH_DATASET. A verifier that can only
+# check the current draft cannot show that the previous one was sound.
+PAPER = pathlib.Path(os.environ.get(
+    "BENCH_PAPER",
+    str(pathlib.Path.home() / "Documents/ludo-claude/ludo-writting-workshop"
+        "/writting-projects/papers/2026/mcp-vs-cli-benchmark/paper-draft-v8.md")))
+DATASET = os.environ.get("BENCH_DATASET", "e3-final.jsonl")
 MINIMAL = {"pi", "tau"}
 fails, checks = [], 0
 
 
 def rows():
-    return [json.loads(l) for l in (ROOT / "results/e3-final.jsonl").read_text().splitlines() if l.strip()]
+    return [json.loads(l) for l in (ROOT / "results" / DATASET).read_text().splitlines() if l.strip()]
 
 
 def live(rs):

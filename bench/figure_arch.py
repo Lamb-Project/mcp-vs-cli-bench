@@ -7,6 +7,7 @@ one script able to drive six of them. The telemetry sits on the model side, so a
 scaffolding cannot under-report by delegating to a sub-agent.
 """
 from __future__ import annotations
+import os
 import pathlib
 
 import matplotlib
@@ -16,6 +17,9 @@ from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 
 FIG = (pathlib.Path.home() / "Documents/ludo-claude/ludo-writting-workshop"
        "/writting-projects/papers/2026/mcp-vs-cli-benchmark/figures")
+# Draft 8's figure must keep saying what draft 8's text says, so the revised
+# diagram lands under its own name instead of overwriting the old one.
+NAME = os.environ.get("ARCH_FIG_NAME", "v5-architecture")
 
 INK, MUTED, SURF = "#111111", "#575757", "#ffffff"
 BLUE, ORANGE, GREEN, GREY = "#2a6fdb", "#e2622a", "#1f9d63", "#8a8a8a"
@@ -71,21 +75,30 @@ def main():
         box(ax, x, 0.545, w, 0.078, n, "no MCP" if c == GREEN else "MCP arm\n+ CLI arm",
             ec=c, fc="white", fs=8.5)
         if n == "Claude Code":
-            # Bypasses the proxy: authenticates to Anthropic on a subscription
-            # account, so its usage figures are self-reported.
-            ax.add_patch(FancyArrowPatch((x + w/2, 0.545), (0.8625, 0.267),
+            # Claude Code crosses the proxy like the other five: ANTHROPIC_BASE_URL
+            # points it at any endpoint speaking the Anthropic message format.
+            # Its box sits to the right of the proxy, so the arrow runs diagonally.
+            ax.add_patch(FancyArrowPatch((x + w/2 - 0.02, 0.545), (0.76, 0.435),
                                          arrowstyle="-|>", mutation_scale=11,
-                                         color=c, lw=1.2, linestyle=(0, (3, 2)),
+                                         color=c, lw=1.1, zorder=2))
+            # The subscription cells are the exception now, not the scaffolding:
+            # a subscription's OAuth token authenticates only against Anthropic,
+            # so those two cells alone stay self-reported.
+            ax.add_patch(FancyArrowPatch((x + w/2 + 0.04, 0.545), (0.8625, 0.267),
+                                         arrowstyle="-|>", mutation_scale=11,
+                                         color=MUTED, lw=1.0, linestyle=(0, (3, 2)),
                                          zorder=2))
-            ax.text(0.883, 0.40, "direct — bypasses the proxy;\nusage self-reported",
-                    fontsize=6.8, color=c, va="center", ha="left")
+            # Left of the grey dashed path and clear of the green completion
+            # line at x=0.94, which the previous placement ran straight through.
+            ax.text(0.878, 0.325, "subscription\ncells (2):\nself-reported",
+                    fontsize=6.5, color=MUTED, va="center", ha="right")
         else:
             arrow(ax, (x + w/2, 0.545), (x + w/2, 0.435), color=c, lw=1.1)
     arrow(ax, (0.50, 0.735), (0.50, 0.625), color=INK, lw=1.5)
 
     # ---- band 4: broker -------------------------------------------------
     box(ax, 0.085, 0.345, 0.715, 0.088, "LiteLLM proxy",
-        "one accounting path for five of the six · tokens, cache, tool calls, schemas",
+        "one accounting path for all six · tokens, cache, tool calls, schemas",
         ec=BLUE, fc="white", lw=1.7)
 
     # ---- band 5: models -------------------------------------------------
@@ -120,13 +133,13 @@ def main():
     ax.text(0.50, -0.058,
             "Claude Code appears twice: it was used in the design and orchestration "
             "of the study, and is also one of the six scaffoldings measured by it.\n"
-            "It is the one scaffolding that does not cross the proxy — it "
-            "authenticates to Anthropic directly, so its usage is self-reported.",
+            "All six cross the proxy. Only the two cells run on a subscription "
+            "account bypass it, because that credential authenticates to Anthropic alone.",
             ha="center", fontsize=7.0, color=MUTED, style="italic")
     fig.tight_layout()
     FIG.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        fig.savefig(FIG / f"v5-architecture.{ext}", facecolor=SURF, bbox_inches="tight")
+        fig.savefig(FIG / f"{NAME}.{ext}", facecolor=SURF, bbox_inches="tight")
     print("  v5-architecture")
 
 

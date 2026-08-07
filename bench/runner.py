@@ -33,7 +33,11 @@ LOCAL = ["glm-5.2", "qwen3.6:27b"]
 ANTHROPIC = ["sonnet-5"]
 
 MATRIX: dict[str, list[str]] = {
-    "claude-code": ANTHROPIC,                 # cannot reach non-Anthropic endpoints
+    # ANTHROPIC_BASE_URL points Claude Code at the proxy like anything else; the
+    # earlier "Anthropic only" entry described our subscription credential, not
+    # the scaffolding. Local models added so the row is measured through the
+    # same instrument as every other row rather than self-reported.
+    "claude-code": ANTHROPIC + LOCAL,
     "codex":       OPENAI_MODELS + LOCAL,
     "qwen-code":   OPENAI_MODELS + LOCAL,
     "pi":          OPENAI_MODELS + LOCAL,     # MCP arm is void; CLI arm runs
@@ -65,7 +69,8 @@ def estimate() -> float:
                     continue
                 if model in LOCAL_MODELS:
                     continue                      # local hardware, no spend
-                if scaffolding == "claude-code":
+                if scaffolding == "claude-code" and model in ADAPTERS[
+                        "claude-code"].NATIVE:
                     continue                      # subscription, not metered here
                 c = theoretical_cost(model, EST_INPUT[arm], EST_OUTPUT)
                 total += c.total_usd

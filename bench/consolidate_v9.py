@@ -22,9 +22,15 @@ import pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 R = ROOT / "results"
 
-# runs-cc.jsonl first: where it overlaps the older files on (scaffolding, model,
-# arm) it is the better measurement, being proxy-side rather than self-reported.
-SOURCES = ["runs-cc.jsonl", "runs-e3-corrected.jsonl", "runs-tau.jsonl",
+# The Claude Code row runs three times, like the other local cells. e3-final
+# carries one row per cell and the repetitions live in their own files feeding
+# the variance analysis, so pass 1 is the representative here and passes 2 and 3
+# are read separately by the replication section.
+#
+# Listed first: where it overlaps the older files on (scaffolding, model, arm) it
+# is the better measurement -- proxy-side rather than self-reported, and with an
+# MCP credential that actually authenticates.
+SOURCES = ["runs-cc-rep1.jsonl", "runs-e3-corrected.jsonl", "runs-tau.jsonl",
            "runs-hermes.jsonl"]
 
 

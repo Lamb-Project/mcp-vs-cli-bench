@@ -123,9 +123,18 @@ class ClaudeCodeAdapter(Adapter):
     def prepare(self, run_dir: Path, model: str, arm: str) -> None:
         self._t0 = datetime.datetime.now().isoformat()
         if arm == "mcp":
+            # ${VAR}, not $VAR. Claude Code expands the braced form only, so the
+            # bare form was handed to the MCP server as a literal string and
+            # every GitHub call came back 401 Bad credentials. The run still
+            # looked healthy from outside -- the server was attached, the
+            # catalogue was transmitted, the agent called MCP tools and reported
+            # cleanly -- so the cell recorded a plausible partial completion
+            # rather than an error. Every Claude Code MCP run in the draft-8
+            # dataset failed this way; the agent's own answer names the cause.
             cfg = {"mcpServers": {"github": {
                 "command": self.mcp_bin, "args": ["stdio"],
-                "env": {"GITHUB_PERSONAL_ACCESS_TOKEN": "$GITHUB_PERSONAL_ACCESS_TOKEN"}}}}
+                "env": {"GITHUB_PERSONAL_ACCESS_TOKEN":
+                        "${GITHUB_PERSONAL_ACCESS_TOKEN}"}}}}
             (run_dir / ".mcp.json").write_text(json.dumps(cfg, indent=1))
 
     def env(self, model: str, arm: str = "cli") -> dict[str, str]:

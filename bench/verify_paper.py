@@ -120,28 +120,43 @@ def main():
     WORDS = {"three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9}
     ck("distinct models claimed", len(models), WORDS.get(m.group(1), -1) if m else -1)
     ck("distinct scaffoldings claimed", len(scaf), 6)
-    ck("total cells in dataset", len(rs), 42)
+    # Read from the manuscript rather than pinned to a constant: a check whose
+    # expected value is hardcoded stops comparing the paper to the data and
+    # starts comparing the data to last draft's number.
+    m = _re.search(r"main matrix of (\d+) cells", txt)
+    ck("total cells in dataset", len(rs), int(m.group(1)) if m else -1)
 
     # delivery method, completed-only (Table 5)
     ond = [r["total_input_tokens"] for r in D if r["arm"] == "mcp" and r["scaffolding"] == "hermes"]
     inl = [r["total_input_tokens"] for r in D if r["arm"] == "mcp" and r["scaffolding"] in ("codex", "qwen-code", "claude-code")]
-    ck("T5 on-demand median", round(st.median(ond)), 70836)
-    ck("T5 on-demand n", len(ond), 4)
-    ck("T5 inline median", round(st.median(inl)), 231797)
-    ck("T5 inline n", len(inl), 5)
-    ck("T5 ratio 3.3", round(st.median(inl)/st.median(ond), 1), 3.3, 0.05)
+    t5 = _re.search(r"\|\s*Fetched on demand\s*\|\s*(\d+)\s*\|\s*([\d,]+)\s*\|\s*(\d+)\s*\|"
+                    r"\s*\n\|\s*Sent in full every request\s*\|\s*(\d+)\s*\|\s*([\d,]+)\s*\|\s*(\d+)\s*\|", txt)
+    ck("T5 on-demand median", round(st.median(ond)),
+       int(t5.group(2).replace(",", "")) if t5 else -1)
+    ck("T5 on-demand n", len(ond), int(t5.group(3)) if t5 else -1)
+    ck("T5 inline median", round(st.median(inl)),
+       int(t5.group(5).replace(",", "")) if t5 else -1)
+    ck("T5 inline n", len(inl), int(t5.group(6)) if t5 else -1)
+    m = _re.search(r"The difference is a factor of \*\*([\d.]+)\*\*", txt)
+    ck("T5 ratio", round(st.median(inl)/st.median(ond), 1),
+       float(m.group(1)) if m else -1, 0.05)
 
     print("\n" + "=" * 78, "\nHEADLINE CLAIMS\n", "=" * 78, sep="")
     span = st.median(x["total_input_tokens"] for x in cmp[order[-1]]) / base
     m = re.search(r"a factor of \*\*(\d+)\*\*", txt)
     ck("scaffolding span (completed runs)", round(span), int(m.group(1)) if m else -1, 1)
     ck("139x bonsai ratio", round(q[-1]["total_input_tokens"]/qb), 139, 1)
-    # waste: the claim that does not depend on conditioning
-    for arm, want in (("cli", 0.4), ("mcp", 42.4)):
+    # waste: the claim that does not depend on conditioning. Both shares are read
+    # off Table 6 rather than pinned, so the check fails when the table and the
+    # data drift apart -- which is the whole job.
+    t6 = _re.search(r"\|\s*Command-line arm\s*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|\s*([\d.]+)%\s*\|"
+                    r"\s*\n\|\s*MCP arm\s*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|\s*([\d.]+)%\s*\|", txt)
+    for arm, grp in (("cli", 1), ("mcp", 2)):
         sub = [r for r in L if r["arm"] == arm and r["scaffolding"] not in MINIMAL]
         bad = [r for r in sub if (r.get("completion_pct") or 0) < 100]
         pct = 100*sum(r["theoretical_cost_usd"] for r in bad)/sum(r["theoretical_cost_usd"] for r in sub)
-        ck(f"wasted cost share, {arm}", round(pct, 1), want, 0.05)
+        ck(f"wasted cost share, {arm}", round(pct, 1),
+           float(t6.group(grp)) if t6 else -1, 0.05)
     print(f"\n  {checks} checks, {len(fails)} failures")
     for f in fails: print(f"    ✗ {f}")
 

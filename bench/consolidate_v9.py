@@ -32,18 +32,13 @@ R = ROOT / "results"
 # Listed first: where it overlaps the older files on (scaffolding, model, arm) it
 # is the better measurement -- proxy-side rather than self-reported, and with an
 # MCP credential that actually authenticates.
-SOURCES = ["runs-cc-rep1.jsonl", "runs-e3-corrected.jsonl", "runs-tau.jsonl",
-           "runs-hermes.jsonl"]
+SOURCES = ["runs-cc-sonnet-mcp.jsonl", "runs-cc-rep1.jsonl",
+           "runs-e3-corrected.jsonl", "runs-tau.jsonl", "runs-hermes.jsonl"]
 
 
 def load(name):
     p = R / name
     return [json.loads(l) for l in p.read_text().splitlines() if l.strip()] if p.exists() else []
-
-
-INVALID_MCP_AUTH = "MCP server received an unexpanded literal as its credential " \
-                   "and answered 401 to every call; the cell measured the " \
-                   "harness configuration, not the protocol"
 
 
 def norm(r):
@@ -52,16 +47,12 @@ def norm(r):
     if valid:
         r["completion_pct"] = round(
             100.0 * sum(bool(v) for v in valid.values()) / len(valid), 1)
-    # The draft-8 Claude Code MCP cell ran against a server that could not
-    # authenticate. It is voided rather than dropped: void rows stay visible in
-    # the tables and stay out of the statistics, which is the distinction the
-    # harness already draws between "cannot" and "costs nothing". Counting it as
-    # an MCP failure put $0.75 of $2.73 of MCP-arm spend into the wasted-cost
-    # share and inflated it from 20.7% to 42.4%.
-    if (r.get("scaffolding") == "claude-code" and r.get("arm") == "mcp"
-            and r.get("model") == "sonnet-5"):
-        r["void"] = True
-        r["void_reason"] = INVALID_MCP_AUTH
+    # The draft-8 Claude Code MCP cell answered 401 to every call because of the
+    # credential fault, and an earlier pass voided it. Voiding was the wrong
+    # response: a run that failed on setup was never a test of the protocol, so
+    # discarding it removes a data point rather than a bad one. It has been
+    # re-run with a working credential -- runs-cc-sonnet-mcp.jsonl, listed first
+    # in SOURCES so it wins the dedupe -- and it completes.
     # Price here rather than afterwards. e3-final carries costs that
     # consolidate_v5 never wrote, so they were added by a step outside the
     # pipeline and the dataset could not be rebuilt from its sources in one

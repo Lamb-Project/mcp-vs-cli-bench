@@ -8,3 +8,6 @@ bin/github-mcp-server
 
 # the manuscript is drafted in the workshop, not published here
 paper/
+
+# agents clone the fixture into the working tree during runs
+aawd-e2-fixture/

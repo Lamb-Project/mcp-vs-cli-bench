@@ -31,11 +31,16 @@ def schemas(r):
     n = r.get("schemas_per_request")
     if n:
         return str(n)
-    # Recorded for Hermes during the run; measured at the proxy for Claude Code.
+    # Recorded for Hermes during the run; measured at the proxy for the two
+    # scaffoldings whose requests we can see there. The subscription cells
+    # bypass the proxy, so their schema counts were never observed and are left
+    # blank rather than inferred from the proxied cells of the same scaffolding.
     if r["scaffolding"] == "hermes":
         return "7" if r["arm"] == "mcp" else "6"
     if r["scaffolding"] == "claude-code" and r["model"] not in ("sonnet-5",):
         return "74" if r["arm"] == "mcp" else "27"
+    if r["scaffolding"] == "opencode":
+        return "57" if r["arm"] == "mcp" else "10"
     return "—"
 
 

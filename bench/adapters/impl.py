@@ -21,6 +21,7 @@ import datetime
 import json
 import os
 import pathlib
+import shlex
 import subprocess
 from pathlib import Path
 
@@ -220,6 +221,119 @@ class ClaudeCodeAdapter(Adapter):
                 f"output={mu.get('outputTokens')} "
                 f"(proxy: input={res.total_input_tokens} "
                 f"output={res.total_output_tokens})")
+        return res
+
+
+class OpenCodeAdapter(Adapter):
+    """opencode — the most-starred open-source terminal agent scaffolding.
+
+    Added after the first six were chosen, when a star-count check showed the
+    sample included ranks 2, 4 and 10 while omitting rank 1. Provider-agnostic by
+    construction, so unlike the others it reaches every model in the study
+    through the proxy without special handling.
+
+    Verified rather than assumed, on version 1.18.15:
+      - built-in catalogue is 10 tools, about 7,100 input tokens before the task
+        has said anything -- a third of Claude Code's baseline;
+      - the MCP arm transmits 57 schemas per request, of which 44 are the
+        GitHub server's entire catalogue, so delivery is eager and this is NOT
+        the second on-demand scaffolding Section 4.3 needs;
+      - MCP tool names are prefixed with the server name (`github_get_me`),
+        not `mcp__`, hence mcp_prefixes below.
+    """
+    name = "opencode"
+    supports_mcp = True
+    mcp_prefixes = ("github_",)
+
+    BIN = str(pathlib.Path.home() / ".opencode" / "bin" / "opencode")
+
+    def prepare(self, run_dir: Path, model: str, arm: str) -> None:
+        self._t0 = datetime.datetime.now().isoformat()
+        base, key = endpoint_for(model)
+        cfg: dict = {
+            "$schema": "https://opencode.ai/config.json",
+            "provider": {"bench": {
+                "npm": "@ai-sdk/openai-compatible",
+                "name": "bench",
+                "options": {"baseURL": base, "apiKey": key},
+                "models": {model: {"name": model}},
+            }},
+        }
+        if arm == "mcp":
+            # The credential is written as a value, not as a variable name for
+            # the scaffolding to expand. The last configuration that relied on
+            # name substitution spent three experiments talking to a server that
+            # answered 401 to everything while looking healthy from outside.
+            # run_dir lives under results/runs/, which is not tracked.
+            cfg["mcp"] = {"github": {
+                "type": "local",
+                "command": [self.mcp_bin, "stdio"],
+                "enabled": True,
+                "environment": {"GITHUB_PERSONAL_ACCESS_TOKEN": self.gh_token},
+            }}
+        (run_dir / "opencode.json").write_text(json.dumps(cfg, indent=2))
+
+    def command(self, model: str, arm: str) -> list[str]:
+        # --pure excludes external plugins, so the run depends on nothing beyond
+        # this configuration. --auto answers the permission prompts that would
+        # otherwise block an unattended run.
+        argv = [self.BIN, "run", "--pure", "--auto", "--format", "json",
+                "-m", f"bench/{model}", prompt_for(arm)]
+        # Invoked through a shell, as a person would invoke it. Exec'd directly
+        # from Python the run dies in about two seconds with
+        # "ProviderModelNotFoundError: Model not found", although the very same
+        # argv works from a shell in the same directory with the same
+        # environment and config, and `opencode models` lists the model either
+        # way. Whatever opencode wants from its parent process, bash supplies it
+        # and posix_spawn does not; the arms and the measurement are unaffected,
+        # since it is the same binary running the same command.
+        return ["bash", "-c", " ".join(shlex.quote(a) for a in argv)]
+
+    def parse(self, stdout, stderr, res: RunResult) -> RunResult:
+        events = []
+        for line in stdout.splitlines():
+            line = line.strip()
+            if line.startswith("{"):
+                try:
+                    events.append(json.loads(line))
+                except json.JSONDecodeError:
+                    pass
+        reg: dict[str, int] = {}
+        texts, failures, self_in, self_out = [], 0, 0, 0
+        for e in events:
+            p = e.get("part") or {}
+            if e.get("type") == "tool_use" or p.get("type") == "tool":
+                nm = p.get("tool")
+                if nm:
+                    reg[nm] = reg.get(nm, 0) + 1
+                if (p.get("state") or {}).get("status") == "error":
+                    failures += 1
+            elif e.get("type") == "text" and p.get("text"):
+                texts.append(p["text"])
+            elif e.get("type") == "step_finish":
+                tk = p.get("tokens") or {}
+                self_in += (tk.get("input") or 0) + (tk.get("cache") or {}).get("read", 0)
+                self_out += tk.get("output") or 0
+        res.tool_register = reg
+        res.tool_calls = sum(reg.values())
+        res.tool_failures = failures
+        res.answer = "\n".join(texts)[-4000:]
+
+        rows = _proxy_rows_since(self._t0, res.model)
+        if rows:
+            res.total_input_tokens = sum(r.get("prompt_tokens") or 0 for r in rows)
+            res.total_output_tokens = sum(r.get("completion_tokens") or 0 for r in rows)
+            cached = [r.get("cached_tokens") for r in rows
+                      if r.get("cached_tokens") is not None]
+            if cached:
+                res.cached_tokens = sum(cached)
+            res.initial_tokens = rows[0].get("prompt_tokens")
+            res.notes.append(f"tokens from proxy log ({len(rows)} requests)")
+        else:
+            res.notes.append("no proxy rows matched — tokens unattributed")
+        res.notes.append(
+            f"scaffolding self-report cross-check: input={self_in} output={self_out} "
+            f"(proxy: input={res.total_input_tokens} output={res.total_output_tokens})")
         return res
 
 
@@ -447,7 +561,7 @@ class PiAdapter(Adapter):
 
 
 ADAPTERS = {a.name: a for a in (ClaudeCodeAdapter, CodexAdapter,
-                                QwenCodeAdapter, PiAdapter)}
+                                QwenCodeAdapter, PiAdapter, OpenCodeAdapter)}
 
 
 TAU_SRC = str(pathlib.Path.home() / "Code/tau/src")

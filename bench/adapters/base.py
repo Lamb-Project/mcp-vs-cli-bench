@@ -53,7 +53,7 @@ class RunResult:
     totals_incomplete: bool = False       # sub-agent cost not in the parent's usage
     notes: list[str] = field(default_factory=list)
 
-    def assert_mcp(self, prefixes: tuple[str, ...] = ("mcp__", "mcp_")) -> None:
+    def assert_mcp(self, prefixes: tuple[str, ...] | None = None) -> None:
         """An MCP arm that never called an MCP tool did not run the arm.
 
         Both qwen-code (unapproved server) and codex (config override ignored)
@@ -62,6 +62,7 @@ class RunResult:
         """
         if self.arm != "mcp":
             return
+        prefixes = prefixes or ("mcp__", "mcp_")
         self.mcp_tools_used = sum(n for name, n in self.tool_register.items()
                                   if name.startswith(prefixes))
         if self.mcp_tools_used == 0:
@@ -100,6 +101,13 @@ class RunResult:
 class Adapter:
     name: str = "base"
     supports_mcp: bool = True
+
+    # How this scaffolding names tools that came from an MCP server. Most prefix
+    # them "mcp__"; opencode prefixes with the server's own name, so a fixed
+    # prefix list would count zero MCP calls on a run that made nothing but MCP
+    # calls -- and zero is indistinguishable from an agent that ignored its
+    # catalogue, which is the behaviour Section 7 measures.
+    mcp_prefixes: tuple[str, ...] = ("mcp__", "mcp_")
 
     def __init__(self, workdir: Path, mcp_bin: str, gh_token: str):
         self.workdir = workdir
@@ -190,7 +198,7 @@ class Adapter:
         except Exception as exc:  # noqa: BLE001
             res.error = f"parse failed: {exc}"
             return res.finalise()
-        res.assert_mcp()
+        res.assert_mcp(self.mcp_prefixes)
         # GLM specifically spirals when thinking is on, emitting tokens unrelated
         # to tool use and inflating whichever arm it lands in. The server sets
         # --reasoning off, but a per-request override could defeat that, so GLM

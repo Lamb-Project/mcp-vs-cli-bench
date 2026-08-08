@@ -55,7 +55,7 @@ def main():
     order = sorted(cmp, key=lambda s: st.median(x["total_input_tokens"] for x in cmp[s]))
     base = st.median(x["total_input_tokens"] for x in cmp[order[0]])
     disp = {"claude-code": "Claude Code", "qwen-code": "qwen-code", "codex": "Codex",
-            "hermes": "Hermes", "tau": "Tau", "pi": "pi"}
+            "hermes": "Hermes", "tau": "Tau", "pi": "pi", "opencode": "opencode"}
     for s2 in order:
         med = st.median(x["total_input_tokens"] for x in cmp[s2])
         cost = st.median(x["theoretical_cost_usd"] for x in cmp[s2])
@@ -116,10 +116,12 @@ def main():
     for word, n in (("five", 5), ("six", 6)):
         pass
     import re as _re
-    m = _re.search(r"across six agent scaffoldings and (\w+) language models", txt)
     WORDS = {"three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9}
-    ck("distinct models claimed", len(models), WORDS.get(m.group(1), -1) if m else -1)
-    ck("distinct scaffoldings claimed", len(scaf), 6)
+    m = _re.search(r"across (\w+)(?: different)? agent scaffoldings and (\w+) language models", txt)
+    ck("distinct models claimed", len(models),
+       WORDS.get(m.group(2), -1) if m else -1)
+    ck("distinct scaffoldings claimed", len(scaf),
+       WORDS.get(m.group(1), -1) if m else -1)
     # Read from the manuscript rather than pinned to a constant: a check whose
     # expected value is hardcoded stops comparing the paper to the data and
     # starts comparing the data to last draft's number.
@@ -128,7 +130,12 @@ def main():
 
     # delivery method, completed-only (Table 5)
     ond = [r["total_input_tokens"] for r in D if r["arm"] == "mcp" and r["scaffolding"] == "hermes"]
-    inl = [r["total_input_tokens"] for r in D if r["arm"] == "mcp" and r["scaffolding"] in ("codex", "qwen-code", "claude-code")]
+    # Every MCP-capable scaffolding except Hermes transmits the catalogue in full;
+    # naming them individually meant a newly added one silently fell out of the
+    # comparison it belongs to.
+    inl = [r["total_input_tokens"] for r in D
+           if r["arm"] == "mcp" and r["scaffolding"] not in MINIMAL
+           and r["scaffolding"] != "hermes"]
     t5 = _re.search(r"\|\s*Fetched on demand\s*\|\s*(\d+)\s*\|\s*([\d,]+)\s*\|\s*(\d+)\s*\|"
                     r"\s*\n\|\s*Sent in full every request\s*\|\s*(\d+)\s*\|\s*([\d,]+)\s*\|\s*(\d+)\s*\|", txt)
     ck("T5 on-demand median", round(st.median(ond)),

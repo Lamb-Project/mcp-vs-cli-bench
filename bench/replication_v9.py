@@ -22,7 +22,9 @@ R = ROOT / "results"
 MINIMAL = {"pi", "tau"}
 REP_FILES = ["runs-local-rep1.jsonl", "runs-local-rep2.jsonl",
              "runs-local-rep3.jsonl",
-             "runs-cc-rep1.jsonl", "runs-cc-rep2.jsonl", "runs-cc-rep3.jsonl"]
+             "runs-cc-rep1.jsonl", "runs-cc-rep2.jsonl", "runs-cc-rep3.jsonl",
+             "runs-opencode-rep1.jsonl", "runs-opencode-rep2.jsonl",
+             "runs-opencode-rep3.jsonl"]
 
 
 def load(name):

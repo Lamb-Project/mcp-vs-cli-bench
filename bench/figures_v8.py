@@ -24,10 +24,11 @@ FIG = (pathlib.Path.home() / "Documents/ludo-claude/ludo-writting-workshop"
 CLI, MCP, MIN = "#2a6fdb", "#e2622a", "#1f9d63"
 INK, MUTED, SURF, GRID = "#111111", "#575757", "#ffffff", "#dcdcdc"
 plt.rcParams.update({"font.size": 9, "axes.titlesize": 10})
-ORDER = ["pi", "tau", "hermes", "codex", "qwen-code", "claude-code"]
+ORDER = ["pi", "tau", "hermes", "codex", "opencode", "qwen-code", "claude-code"]
 MINIMAL = {"pi", "tau"}
 DISP = {"pi": "pi", "tau": "Tau", "hermes": "Hermes", "codex": "Codex",
-        "qwen-code": "qwen-code", "claude-code": "Claude Code"}
+        "qwen-code": "qwen-code", "claude-code": "Claude Code",
+        "opencode": "opencode"}
 
 
 def load():
@@ -98,7 +99,7 @@ def fig_arms(done):
     by = defaultdict(dict)
     for r in done: by[r["scaffolding"]].setdefault(r["arm"], []).append(r)
     rows = []
-    for s in ("hermes", "codex", "qwen-code", "claude-code"):
+    for s in ("hermes", "codex", "opencode", "qwen-code", "claude-code"):
         d = by.get(s, {})
         c = st.median(x["total_input_tokens"] for x in d["cli"]) if d.get("cli") else None
         m = st.median(x["total_input_tokens"] for x in d["mcp"]) if d.get("mcp") else None

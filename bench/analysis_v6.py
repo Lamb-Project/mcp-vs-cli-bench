@@ -19,7 +19,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATASET = os.environ.get("BENCH_DATASET", "e3-final.jsonl")
 MINIMAL = {"pi", "tau"}
 DISP = {"pi": "pi", "tau": "Tau", "hermes": "Hermes", "codex": "Codex",
-        "qwen-code": "qwen-code", "claude-code": "Claude Code"}
+        "qwen-code": "qwen-code", "claude-code": "Claude Code",
+        "opencode": "opencode"}
 
 
 def load():
@@ -76,7 +77,7 @@ def table3(done):
     for r in done: by[r["scaffolding"]].setdefault(r["arm"], []).append(r)
     lines = ["| Scaffolding | Command line | MCP | Ratio | Runs (cmd / MCP) |",
              "|---|---:|---:|---:|:--:|"]
-    for s in ("hermes", "codex", "qwen-code", "claude-code"):
+    for s in ("hermes", "codex", "opencode", "qwen-code", "claude-code"):
         d = by.get(s, {})
         if "cli" in d and "mcp" in d:
             c, m = med(d["cli"]), med(d["mcp"])

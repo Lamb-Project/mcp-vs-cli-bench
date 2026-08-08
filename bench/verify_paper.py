@@ -164,6 +164,19 @@ def main():
         pct = 100*sum(r["theoretical_cost_usd"] for r in bad)/sum(r["theoretical_cost_usd"] for r in sub)
         ck(f"wasted cost share, {arm}", round(pct, 1),
            float(t6.group(grp)) if t6 else -1, 0.05)
+
+    # Sensitivity split by model scale (draft 10 onward). Guarded on the text
+    # being present, so earlier drafts that predate the split still verify.
+    m = _re.search(r"wasted-cost shares move to (\d+(?:\.\d+)?) per cent against (\d+(?:\.\d+)?)", txt)
+    if m:
+        for arm, grp in (("mcp", 1), ("cli", 2)):
+            sub = [r for r in L if r["arm"] == arm and r["scaffolding"] not in MINIMAL
+                   and r["model"] != "qwen3.6:27b"]
+            bad = [r for r in sub if (r.get("completion_pct") or 0) < 100]
+            pct = 100*sum(r["theoretical_cost_usd"] for r in bad)/sum(r["theoretical_cost_usd"] for r in sub)
+            ck(f"sans-27b wasted share, {arm}", round(pct, 1), float(m.group(grp)), 0.05)
+            ck(f"sans-27b failures, {arm}", len(bad), {"cli": 1, "mcp": 3}[arm])
+            ck(f"sans-27b runs, {arm}", len(sub), 14)
     print(f"\n  {checks} checks, {len(fails)} failures")
     for f in fails: print(f"    ✗ {f}")
 

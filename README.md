@@ -1,5 +1,7 @@
 # mcp-vs-cli-bench
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21851992.svg)](https://doi.org/10.5281/zenodo.21851992)
+
 An open benchmark comparing **MCP tool use** against **CLI tool use** across agent
 scaffoldings and models.
 

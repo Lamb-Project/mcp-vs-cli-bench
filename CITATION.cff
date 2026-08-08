@@ -3,6 +3,14 @@ message: "If you use this benchmark, please cite it."
 title: "mcp-vs-cli-bench: an open benchmark for MCP versus CLI tool use across agent scaffoldings and models"
 type: software
 version: 1.0.0
+doi: 10.5281/zenodo.21851992
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.21851992
+    description: "Version 1.0.0 archive"
+  - type: doi
+    value: 10.5281/zenodo.21851991
+    description: "Concept DOI for all versions"
 license: GPL-3.0-or-later
 repository-code: "https://github.com/Lamb-Project/mcp-vs-cli-bench"
 authors:

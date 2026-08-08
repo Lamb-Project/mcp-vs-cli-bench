@@ -9,14 +9,16 @@ Connecting a tool catalogue over the Model Context Protocol places every tool's
 schema in the model's context. Exposing the same capability through a
 command-line tool places a command string there instead. The difference is
 widely asserted and rarely measured across more than one setup. This benchmark
-measures it on a fixed task, across four scaffoldings and nine models, and
+measures it on a fixed task, across seven scaffoldings and five models, and
 publishes the harness so the numbers can be checked.
 
 ## What is measured
 
-One workflow, five independently checkable sub-answers, run twice per
-scaffolding/model pair — once with a GitHub MCP server attached, once with the
-scaffolding's native shell and the `gh` CLI.
+One workflow — six operations against a private GitHub repository — run twice
+per scaffolding/model pair: once with the official GitHub MCP server attached,
+once with the scaffolding's native shell and the `gh` CLI. Completion is scored
+over four independently verifiable conditions by reading repository state back
+through the API, never by trusting the agent's own report.
 
 Per run:
 
@@ -33,18 +35,27 @@ Per run:
 
 ## Scaffoldings and models
 
-| Scaffolding | Models | MCP arm | CLI arm |
-|---|---|:--:|:--:|
-| Claude Code | sonnet-5, opus-5, fable-5 | ✅ | ✅ |
-| Codex | gpt-5.6 sol/luna/terra, glm-5.2, qwen3.5:122b, qwen3.6:27b | ✅ | ✅ |
-| qwen-code | same six | ✅ | ✅ |
-| pi | same six | ⛔ **void** | ✅ |
+| Scaffolding | MCP arm | CLI arm |
+|---|:--:|:--:|
+| Claude Code | ✅ | ✅ |
+| OpenAI Codex | ✅ | ✅ |
+| qwen-code | ✅ | ✅ |
+| Hermes | ✅ | ✅ |
+| opencode | ✅ | ✅ |
+| pi | ⛔ **void** | ✅ |
+| Tau | ⛔ **void** | ✅ |
 
-**pi ships no MCP client** — no flag, no configuration, nothing in its help
-output. Its MCP cells are reported void rather than as zeros, because "cannot"
-and "costs nothing" are different claims.
+Models: `gpt-5.6-luna`, `gpt-5.6-terra` (hosted), `glm-5.2`, `qwen3.6:27b`
+(served locally), and `sonnet-5` (Claude Code on its subscription credential).
 
-**Claude Code reaches only Anthropic models**; it has no custom-endpoint path.
+**pi and Tau ship no MCP client** — their MCP cells are reported void rather
+than as zeros, because "cannot" and "costs nothing" are different claims.
+
+**Claude Code is measured at the proxy like everything else.** Pointing
+`ANTHROPIC_BASE_URL` at the LiteLLM proxy routes it to any model speaking the
+Anthropic message format; only the two cells run on a subscription credential
+bypass the proxy and self-report, and on the proxied runs the two accountings
+agree to the token.
 
 Every scaffolding is run in its **default configuration** — no tool pruning, no
 registry trimming — with thinking disabled or set to its lowest setting. The
@@ -67,8 +78,9 @@ Requirements, and each one changes the numbers if skipped:
 
 - **llama-server with `--reasoning off`** for GLM. Its thinking mode can run away
   without terminating; the published figures assume it is off.
-- **The pinned fixture** `Lamb-Project/aawd-e1-fixture` at tag `fixture-v1`, so
-  ground truth cannot drift.
+- **The private fixture** `Lamb-Project/aawd-e2-fixture`, reset by
+  `bench.seed_e2` before every run so one run's leftovers cannot satisfy the
+  next run's checks.
 - **`fastapi==0.136.3`** if using the LiteLLM proxy — litellm 1.95.0 declares a
   range that includes versions which break its own import.
 - **KV cache cleared between local runs.** llama-server persists cache to disk,
@@ -81,9 +93,9 @@ python setup/configure_pi.py        # register pi's providers
 
 python -m bench.runner --estimate-only     # spend estimate; refuses to exceed budget
 python -m bench.runner --budget 5.00
-python -m bench.consolidate                # merge runs, later supersedes earlier
-python -m bench.analyze --runs results/final.jsonl
-BENCH_PAPER=/path/to/draft.md python -m bench.fill_paper   # optional
+python -m bench.consolidate_v10            # build results/e5-final.jsonl from the run files
+BENCH_DATASET=e5-final.jsonl python -m bench.analysis_v6   # the paper's tables
+BENCH_DATASET=e5-final.jsonl python -m bench.verify_paper  # recompute every published number
 ```
 
 `install.sh` refuses to proceed if a precondition is wrong rather than producing
@@ -116,9 +128,9 @@ figures and tables remain reproducible from the published data.
 
 ## Status
 
-Results collected. The main matrix is 46 cells across six agent scaffoldings and
-five models, with the locally-served configurations repeated three times so that
-run-to-run variation is measured rather than assumed. `bench/verify_paper.py`
+Results collected. The main matrix is 54 cells across seven agent scaffoldings
+and five models, with the locally-served configurations repeated three times so
+that run-to-run variation is measured rather than assumed. `bench/verify_paper.py`
 recomputes every number in the accompanying manuscript from the dataset.
 
 ## Authors

@@ -8,16 +8,16 @@
       "affiliation": "Universitat Politècnica de Catalunya (UPC), Barcelona, Spain"
     },
     {
-      "name": "Pereira, Juanan",
-      "affiliation": "Universidad del País Vasco / Euskal Herriko Unibertsitatea (UPV/EHU), Donostia-San Sebastián, Spain"
-    },
-    {
       "name": "Casañ, María José",
       "affiliation": "Universitat Politècnica de Catalunya (UPC), Barcelona, Spain"
     },
     {
       "name": "García-Peñalvo, Francisco José",
       "affiliation": "Universidad de Salamanca (USAL), Salamanca, Spain"
+    },
+    {
+      "name": "Pereira, Juanan",
+      "affiliation": "Universidad del País Vasco / Euskal Herriko Unibertsitatea (UPV/EHU), Donostia-San Sebastián, Spain"
     }
   ],
   "description": "<p>An open, re-runnable benchmark comparing tool use over the Model Context Protocol against tool use over an ordinary command line, across seven agent scaffoldings (Claude Code, OpenAI Codex, qwen-code, Hermes, opencode, pi and Tau) and five language models spanning hosted frontier systems and locally-served open weights.</p><p>One fixed workflow &mdash; six operations against a private GitHub repository &mdash; is run under each scaffolding and model in two arms: once with the official GitHub MCP server attached, and once with only a shell. Completion is scored over four independently checkable conditions by reading repository state back through the API after the run, never by accepting the agent's own report. Every request crosses a local proxy that records input, output and cached tokens, the tools offered in each request, and the tools actually called, so a scaffolding cannot under-report by delegating work to a sub-agent.</p><p>The repository contains the harness, the task and its verification, the scaffolding adapters, the cost model, the proxy configuration, the analysis and figure scripts, and every raw run record, including runs that were discarded and why. Locally-served configurations are repeated three times so that run-to-run variation is measured rather than assumed. A verification script recomputes every number published in the accompanying paper directly from the dataset.</p>",

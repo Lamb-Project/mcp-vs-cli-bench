@@ -18,15 +18,15 @@ authors:
     given-names: Marc
     affiliation: "Universitat Politècnica de Catalunya (UPC), Barcelona, Spain"
     email: marc.alier@upc.edu
-  - family-names: Pereira
-    given-names: Juanan
-    affiliation: "Universidad del País Vasco / Euskal Herriko Unibertsitatea (UPV/EHU), Donostia-San Sebastián, Spain"
   - family-names: Casañ
     given-names: María José
     affiliation: "Universitat Politècnica de Catalunya (UPC), Barcelona, Spain"
   - family-names: García-Peñalvo
     given-names: Francisco José
     affiliation: "Universidad de Salamanca (USAL), Salamanca, Spain"
+  - family-names: Pereira
+    given-names: Juanan
+    affiliation: "Universidad del País Vasco / Euskal Herriko Unibertsitatea (UPV/EHU), Donostia-San Sebastián, Spain"
 keywords:
   - Model Context Protocol
   - LLM agents

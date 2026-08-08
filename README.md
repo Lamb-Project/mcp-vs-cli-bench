@@ -136,9 +136,9 @@ recomputes every number in the accompanying manuscript from the dataset.
 ## Authors
 
 - Marc Alier — Universitat Politècnica de Catalunya (UPC), Barcelona
-- Juanan Pereira — Universidad del País Vasco / Euskal Herriko Unibertsitatea (UPV/EHU), Donostia-San Sebastián
 - María José Casañ — Universitat Politècnica de Catalunya (UPC), Barcelona
 - Francisco José García-Peñalvo — Universidad de Salamanca (USAL), Salamanca
+- Juanan Pereira — Universidad del País Vasco / Euskal Herriko Unibertsitatea (UPV/EHU), Donostia-San Sebastián
 
 Correspondence: `marc.alier@upc.edu`
 

@@ -138,8 +138,8 @@ def fig_arms(done):
 
 
 def fig_catalogue(done):
-    groups = {"MCP, fetched on demand\n(7 schemas per request)": [],
-              "MCP, sent in full\n(44 schemas per request)": []}
+    groups = {"MCP, fetched on demand\n(7 server schemas per request)": [],
+              "MCP, sent in full\n(44 server schemas per request)": []}
     for r in done:
         if r["arm"] != "mcp": continue
         key = list(groups)[0] if r["scaffolding"] == "hermes" else list(groups)[1]

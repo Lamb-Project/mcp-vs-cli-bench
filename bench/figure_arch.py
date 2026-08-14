@@ -3,7 +3,7 @@
 
 The diagram carries an argument, not just boxes: every scaffolding under test is
 reached the same way — as a subprocess with a command line — which is what makes
-one script able to drive six of them. The telemetry sits on the model side, so a
+one script able to drive seven of them. The telemetry sits on the model side, so a
 scaffolding cannot under-report by delegating to a sub-agent.
 """
 from __future__ import annotations
@@ -62,13 +62,14 @@ def main():
         "reset · select cell · invoke · verify", ec=INK, fc="white", lw=1.6)
     arrow(ax, (0.27, 0.858), (0.30, 0.805), color=GREY, rad=-0.2)
 
-    # ---- band 3: the six scaffoldings ----------------------------------
+    # ---- band 3: the seven scaffoldings ----------------------------------
     ax.add_patch(plt.Rectangle((0.02, 0.475), 0.96, 0.215, fc=BAND, ec="none", zorder=0))
-    ax.text(0.035, 0.686, "SIX AGENT SCAFFOLDINGS  —  each invoked as a subprocess "
+    ax.text(0.035, 0.686, "SEVEN AGENT SCAFFOLDINGS  —  each invoked as a subprocess "
             "with a command line", fontsize=7.5, color=MUTED, fontweight="bold", va="top")
     names = [("pi", GREEN), ("Tau", GREEN), ("Hermes", ORANGE),
-             ("Codex", ORANGE), ("qwen-code", ORANGE), ("Claude Code", ORANGE)]
-    w, gap = 0.135, 0.019
+             ("Codex", ORANGE), ("opencode", ORANGE), ("qwen-code", ORANGE),
+             ("Claude Code", ORANGE)]
+    w, gap = 0.122, 0.0135
     x0 = (1 - (len(names)*w + (len(names)-1)*gap)) / 2
     for i, (n, c) in enumerate(names):
         x = x0 + i*(w + gap)

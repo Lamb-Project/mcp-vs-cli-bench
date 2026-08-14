@@ -177,6 +177,60 @@ def main():
             ck(f"sans-27b wasted share, {arm}", round(pct, 1), float(m.group(grp)), 0.05)
             ck(f"sans-27b failures, {arm}", len(bad), {"cli": 1, "mcp": 3}[arm])
             ck(f"sans-27b runs, {arm}", len(sub), 14)
+
+    # Review-pass claims (2026-08-14). Every check here guards a sentence the
+    # first external review caught quoting a stale or mislabelled number. Each
+    # is gated on its anchor phrase, so drafts that predate the pass verify.
+    fl = [r for r in L if (r.get("completion_pct") or 0) < 100]
+    if "132,755 input tokens against 106,929" in txt:
+        ck("failed-run median", round(st.median(r["total_input_tokens"] for r in fl)), 132755, 1)
+        ck("completed-run median", round(st.median(r["total_input_tokens"] for r in D)), 106929, 1)
+    m = _re.search(r"between (\d+\.\d+) and (\d+\.\d+) times a completed run on a scaffolding with no MCP client", txt)
+    if m:
+        pim = st.median(x["total_input_tokens"] for x in cli["pi"] if (x.get("completion_pct") or 0) == 100)
+        rats = sorted(r["total_input_tokens"]/pim for r in fl)
+        ck("failure-cost ratio, low", round(rats[0], 1), float(m.group(1)), 0.05)
+        ck("failure-cost ratio, high", round(rats[-1], 1), float(m.group(2)), 0.05)
+    if "5.6× to 28× fewer input tokens" in txt or "factor of 5.6 in input tokens" in txt:
+        pim = st.median(x["total_input_tokens"] for x in cli["pi"] if (x.get("completion_pct") or 0) == 100)
+        cx = st.median(x["total_input_tokens"] for x in cli["codex"] if (x.get("completion_pct") or 0) == 100)
+        cc = st.median(x["total_input_tokens"] for x in cli["claude-code"] if (x.get("completion_pct") or 0) == 100)
+        ck("range near end (pi vs Codex, cli)", round(cx/pim, 1), 5.6, 0.05)
+        ck("range far end (pi vs Claude Code, cli)", round(cc/pim, 1), 28.0, 0.05)
+    if "2.8 between pi and Codex" in txt:
+        pic = st.median(x["theoretical_cost_usd"] for x in cli["pi"] if (x.get("completion_pct") or 0) == 100)
+        cxc = st.median(x["theoretical_cost_usd"] for x in cli["codex"] if (x.get("completion_pct") or 0) == 100)
+        ck("dollar factor pi vs Codex, cli", round(cxc/pic, 1), 2.8, 0.05)
+    if "1.6× the tokens" in txt:
+        pool = {a: [r for r in D if r["arm"] == a and r["scaffolding"] not in MINIMAL] for a in ("mcp", "cli")}
+        mt = st.median(r["total_input_tokens"] for r in pool["mcp"])
+        ct = st.median(r["total_input_tokens"] for r in pool["cli"])
+        ck("pooled token ratio, mcp/cli", round(mt/ct, 1), 1.6, 0.05)
+        ml = st.median(r["theoretical_cost_usd"] for r in pool["mcp"])
+        cl = st.median(r["theoretical_cost_usd"] for r in pool["cli"])
+        ck("pooled list-price margin, %", round(100*(ml/cl - 1)), 12, 0.5)
+        md = st.median(r["cost_usd_cached_discounted"] for r in pool["mcp"])
+        cd = st.median(r["cost_usd_cached_discounted"] for r in pool["cli"])
+        ck("pooled cached-cost margin, %", round(100*(md/cd - 1)), 20, 2)
+    if "between 91,409 and 134,618" in txt:
+        meds, costs = [], []
+        for mo in {r["model"] for r in D if r["model"] != "sonnet-5"}:
+            sub = [r for r in D if r["model"] == mo]
+            meds.append(st.median(r["total_input_tokens"] for r in sub))
+            costs.append(st.median(r["theoretical_cost_usd"] for r in sub))
+        ck("model token range, low", round(min(meds)), 91409, 1)
+        ck("model token range, high", round(max(meds)), 134618, 1)
+        ck("model cost range, low", round(min(costs), 4), 0.0141, 0.0001)
+        ck("model cost range, high", round(max(costs), 4), 0.1243, 0.0001)
+    if "from six to seventy-four" in txt:
+        sch = [int(x) for x in _re.findall(r"\|\s*\d[\d,]*\s*\|\s*[\d%—-]+\s*\|\s*\d+\s*\|\s*(\d+)\s*\|\s*\d+%\s*\|", txt)]
+        if sch:
+            ck("schema spread, low", min(sch), 6)
+            ck("schema spread, high", max(sch), 74)
+    m = _re.search(r"attached in twenty-one runs", txt)
+    if m and "six used the MCP tools exclusively" in txt:
+        ck("behaviour categories sum to the attached population", 6 + 6 + 6 + 3, 21)
+
     print(f"\n  {checks} checks, {len(fails)} failures")
     for f in fails: print(f"    ✗ {f}")
 

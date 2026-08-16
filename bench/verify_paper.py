@@ -231,6 +231,54 @@ def main():
     if m and "six used the MCP tools exclusively" in txt:
         ck("behaviour categories sum to the attached population", 6 + 6 + 6 + 3, 21)
 
+
+    # Decomposition section (v10.6): recomputed from the derived request counts.
+    if "tokens-per-request factor spans" in txt:
+        import json as _json
+        req = {(q["scaffolding"], q["model"], q["arm"]): q
+               for q in (_json.loads(l) for l in (PAPER.parent and (pathlib.Path(__file__).resolve().parents[1] / "results" / "requests-per-run.jsonl").read_text().splitlines()) if l.strip())}
+        pairs = []
+        for (s, mo, arm), q in req.items():
+            if arm != "cli" or not q["completed"] or not q["n_requests"]: continue
+            k = req.get((s, mo, "mcp"))
+            if not k or not k["completed"] or not k["n_requests"]: continue
+            tot = k["total_input"] / q["total_input"]
+            xr = k["n_requests"] / q["n_requests"]
+            xt = (k["total_input"] / k["n_requests"]) / (q["total_input"] / q["n_requests"])
+            pairs.append((s, mo, tot, xr, xt))
+        ck("decomp pairs", len(pairs), 12)
+        ck("decomp total span low", round(min(p[2] for p in pairs), 2), 0.61, 0.005)
+        ck("decomp total span high", round(max(p[2] for p in pairs), 2), 29.06, 0.005)
+        ck("decomp payload span low", round(min(p[4] for p in pairs), 2), 1.05, 0.005)
+        ck("decomp payload span high", round(max(p[4] for p in pairs), 2), 4.61, 0.005)
+        ck("decomp payload never below one", sum(1 for p in pairs if p[4] < 1), 0)
+        ck("decomp MCP-fewer-requests pairs", sum(1 for p in pairs if p[3] < 1), 9)
+        ck("decomp median request factor", round(st.median(p[3] for p in pairs), 2), 0.70, 0.005)
+        ck("decomp median payload factor", round(st.median(p[4] for p in pairs), 1), 1.2, 0.05)
+        cx = [p for p in pairs if p[0] == "codex" and "27b" in p[1]][0]
+        ck("decomp outlier request factor", round(cx[3], 2), 6.30, 0.005)
+        ck("decomp outlier payload factor", round(cx[4], 2), 4.61, 0.005)
+        # CLI-arm table: every row of Table 7 reproduces
+        rowsT = _re.findall(r"\|\s*([A-Za-z-]+(?: Code)?)\s*\|\s*(\d+)\s*\|\s*(\d+)\s*\|\s*([\d,]+)\s*\|\s*×([\d.]+)\s*\|", txt)
+        name2s = {"pi": "pi", "Tau": "tau", "Hermes": "hermes", "opencode": "opencode",
+                  "Codex": "codex", "Claude Code": "claude-code", "qwen-code": "qwen-code"}
+        clir = {}
+        for (s, mo, arm), q in req.items():
+            if arm == "cli" and q["completed"] and q["n_requests"]:
+                clir.setdefault(s, []).append(q)
+        pib = st.median(x["total_input"] / x["n_requests"] for x in clir["pi"])
+        seen = 0
+        for disp, n, mreq, tpr, vs in rowsT:
+            s = name2s.get(disp)
+            if not s or s not in clir: continue
+            seen += 1
+            ck(f"T7 {s} runs", len(clir[s]), int(n))
+            ck(f"T7 {s} median requests", round(st.median(x["n_requests"] for x in clir[s])), int(mreq))
+            got = st.median(x["total_input"] / x["n_requests"] for x in clir[s])
+            ck(f"T7 {s} tokens/request", round(got), int(tpr.replace(",", "")), 1)
+            ck(f"T7 {s} vs pi", round(got / pib, 1), float(vs), 0.05)
+        ck("T7 rows parsed", seen, 7)
+
     print(f"\n  {checks} checks, {len(fails)} failures")
     for f in fails: print(f"    ✗ {f}")
 

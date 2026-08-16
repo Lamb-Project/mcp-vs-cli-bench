@@ -1,0 +1,46 @@
+{"scaffolding": "claude-code", "model": "sonnet-5", "arm": "mcp", "total_input": 235892, "completed": true, "tool_calls": 8, "n_requests": null, "source": "self-reported; no proxy rows"}
+{"scaffolding": "claude-code", "model": "glm-5.2", "arm": "cli", "total_input": 278455, "completed": true, "tool_calls": 13, "n_requests": 13, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "claude-code", "model": "qwen3.6:27b", "arm": "cli", "total_input": 94572, "completed": false, "tool_calls": 3, "n_requests": 5, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "claude-code", "model": "glm-5.2", "arm": "mcp", "total_input": 260170, "completed": true, "tool_calls": 9, "n_requests": 8, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "claude-code", "model": "qwen3.6:27b", "arm": "mcp", "total_input": 188183, "completed": true, "tool_calls": 6, "n_requests": 6, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "opencode", "model": "glm-5.2", "arm": "cli", "total_input": 73486, "completed": true, "tool_calls": 11, "n_requests": 10, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "opencode", "model": "qwen3.6:27b", "arm": "cli", "total_input": 66448, "completed": false, "tool_calls": 9, "n_requests": 9, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "opencode", "model": "glm-5.2", "arm": "mcp", "total_input": 131649, "completed": true, "tool_calls": 9, "n_requests": 7, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "opencode", "model": "qwen3.6:27b", "arm": "mcp", "total_input": 111826, "completed": true, "tool_calls": 6, "n_requests": 6, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "opencode", "model": "gpt-5.6-luna", "arm": "cli", "total_input": 241612, "completed": true, "tool_calls": 21, "n_requests": 20, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "opencode", "model": "gpt-5.6-terra", "arm": "cli", "total_input": 137800, "completed": true, "tool_calls": 17, "n_requests": 19, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "opencode", "model": "gpt-5.6-luna", "arm": "mcp", "total_input": 214898, "completed": true, "tool_calls": 12, "n_requests": 14, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "opencode", "model": "gpt-5.6-terra", "arm": "mcp", "total_input": 129114, "completed": true, "tool_calls": 9, "n_requests": 9, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "claude-code", "model": "sonnet-5", "arm": "cli", "total_input": 543139, "completed": true, "tool_calls": 14, "n_requests": null, "source": "self-reported; no proxy rows"}
+{"scaffolding": "codex", "model": "gpt-5.6-luna", "arm": "cli", "total_input": 81510, "completed": true, "tool_calls": 14, "n_requests": 9, "source": "proxy sum-match"}
+{"scaffolding": "codex", "model": "gpt-5.6-terra", "arm": "cli", "total_input": 39378, "completed": true, "tool_calls": 6, "n_requests": 4, "source": "proxy sum-match"}
+{"scaffolding": "codex", "model": "glm-5.2", "arm": "cli", "total_input": 102031, "completed": true, "tool_calls": 20, "n_requests": 12, "source": "proxy sum-match"}
+{"scaffolding": "codex", "model": "qwen3.6:27b", "arm": "cli", "total_input": 83247, "completed": true, "tool_calls": 16, "n_requests": 10, "source": "proxy sum-match"}
+{"scaffolding": "qwen-code", "model": "gpt-5.6-luna", "arm": "cli", "total_input": 288808, "completed": true, "tool_calls": 15, "n_requests": 10, "source": "proxy sum-match"}
+{"scaffolding": "qwen-code", "model": "gpt-5.6-terra", "arm": "cli", "total_input": 228002, "completed": true, "tool_calls": 9, "n_requests": 8, "source": "proxy sum-match"}
+{"scaffolding": "qwen-code", "model": "glm-5.2", "arm": "cli", "total_input": 322868, "completed": true, "tool_calls": 11, "n_requests": 10, "source": "proxy sum-match"}
+{"scaffolding": "qwen-code", "model": "qwen3.6:27b", "arm": "cli", "total_input": 306490, "completed": true, "tool_calls": 11, "n_requests": 9, "source": "proxy sum-match"}
+{"scaffolding": "pi", "model": "gpt-5.6-luna", "arm": "cli", "total_input": 15731, "completed": true, "tool_calls": 13, "n_requests": 14, "source": "estimated: tool_calls+1 (validated on matched pi runs)"}
+{"scaffolding": "pi", "model": "gpt-5.6-terra", "arm": "cli", "total_input": 10892, "completed": true, "tool_calls": 7, "n_requests": 8, "source": "estimated: tool_calls+1 (validated on matched pi runs)"}
+{"scaffolding": "pi", "model": "glm-5.2", "arm": "cli", "total_input": 13588, "completed": true, "tool_calls": 6, "n_requests": 7, "source": "proxy sum-match"}
+{"scaffolding": "pi", "model": "qwen3.6:27b", "arm": "cli", "total_input": 25548, "completed": true, "tool_calls": 10, "n_requests": 11, "source": "proxy sum-match"}
+{"scaffolding": "codex", "model": "gpt-5.6-luna", "arm": "mcp", "total_input": 189489, "completed": false, "tool_calls": 10, "n_requests": 9, "source": "proxy sum-match"}
+{"scaffolding": "codex", "model": "gpt-5.6-terra", "arm": "mcp", "total_input": 181806, "completed": false, "tool_calls": 10, "n_requests": 8, "source": "proxy sum-match"}
+{"scaffolding": "codex", "model": "glm-5.2", "arm": "mcp", "total_input": 231797, "completed": true, "tool_calls": 30, "n_requests": 16, "source": "proxy sum-match"}
+{"scaffolding": "codex", "model": "qwen3.6:27b", "arm": "mcp", "total_input": 2418828, "completed": true, "tool_calls": 108, "n_requests": 63, "source": "proxy sum-match"}
+{"scaffolding": "qwen-code", "model": "gpt-5.6-luna", "arm": "mcp", "total_input": 187725, "completed": true, "tool_calls": 8, "n_requests": 6, "source": "proxy sum-match"}
+{"scaffolding": "qwen-code", "model": "gpt-5.6-terra", "arm": "mcp", "total_input": 219075, "completed": true, "tool_calls": 8, "n_requests": 7, "source": "proxy sum-match"}
+{"scaffolding": "qwen-code", "model": "glm-5.2", "arm": "mcp", "total_input": 170937, "completed": false, "tool_calls": 8, "n_requests": 5, "source": "proxy sum-match"}
+{"scaffolding": "qwen-code", "model": "qwen3.6:27b", "arm": "mcp", "total_input": 397922, "completed": true, "tool_calls": 10, "n_requests": 11, "source": "proxy sum-match"}
+{"scaffolding": "tau", "model": "gpt-5.6-luna", "arm": "cli", "total_input": 11554, "completed": true, "tool_calls": 6, "n_requests": 7, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "tau", "model": "gpt-5.6-terra", "arm": "cli", "total_input": 27412, "completed": true, "tool_calls": 11, "n_requests": 9, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "tau", "model": "glm-5.2", "arm": "cli", "total_input": 15502, "completed": true, "tool_calls": 7, "n_requests": 9, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "tau", "model": "qwen3.6:27b", "arm": "cli", "total_input": 17416, "completed": true, "tool_calls": 7, "n_requests": 9, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "hermes", "model": "gpt-5.6-luna", "arm": "cli", "total_input": 73655, "completed": false, "tool_calls": 0, "n_requests": 11, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "hermes", "model": "gpt-5.6-terra", "arm": "cli", "total_input": 91409, "completed": true, "tool_calls": 0, "n_requests": 13, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "hermes", "model": "glm-5.2", "arm": "cli", "total_input": 74755, "completed": true, "tool_calls": 15, "n_requests": 11, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "hermes", "model": "qwen3.6:27b", "arm": "cli", "total_input": 83954, "completed": true, "tool_calls": 14, "n_requests": 12, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "hermes", "model": "gpt-5.6-luna", "arm": "mcp", "total_input": 75352, "completed": true, "tool_calls": 0, "n_requests": 9, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "hermes", "model": "gpt-5.6-terra", "arm": "mcp", "total_input": 81222, "completed": true, "tool_calls": 0, "n_requests": 11, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "hermes", "model": "glm-5.2", "arm": "mcp", "total_input": 45875, "completed": true, "tool_calls": 12, "n_requests": 6, "source": "notes (capture-time proxy count)"}
+{"scaffolding": "hermes", "model": "qwen3.6:27b", "arm": "mcp", "total_input": 66320, "completed": true, "tool_calls": 14, "n_requests": 8, "source": "notes (capture-time proxy count)"}
